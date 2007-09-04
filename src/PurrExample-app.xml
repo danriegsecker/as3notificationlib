@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application xmlns="http://ns.adobe.com/air/application/1.0.M5" appId="com.adobe.purrexample" version="1.0 Beta">
+    
+    <name>PurrExample</name>
+
+    <description>A simple example showing how to use Purr notifications.</description>
+
+    <copyright></copyright>
+
+    <initialWindow>
+        <title>PurrExample</title>
+        <content>[SWF reference is generated]</content>
+        <systemChrome>standard</systemChrome>
+        <transparent>false</transparent>
+        <visible>true</visible>
+    </initialWindow>
+
+    <icon/>
+    
+</application>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:WindowedApplication xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" creationComplete="init();">
+	<mx:Script>
+		<![CDATA[
+			import com.adobe.air.notification.Purr;
+			import com.adobe.air.notification.Notification;
+			private function init():void
+			{
+				var purr:Purr = new Purr(1);
+				purr.alert("informational", Shell.shell.activeWindow);
+				var n1:Notification = new Notification();
+				n1.title = "This is a title";
+				n1.message = "This is a message";
+				purr.addNotification(n1);
+			}
+		]]>
+	</mx:Script>
+</mx:WindowedApplication>
