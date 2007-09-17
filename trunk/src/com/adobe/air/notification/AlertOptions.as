@@ -11,42 +11,42 @@ package com.adobe.air.notification
 		
 		public function set nativeWindow(nativeWindow:NativeWindow):void
 		{
-			this._nativeWindow = nativeWindow;
+			_nativeWindow = nativeWindow;
 		}
 
 		public function get nativeWindow():NativeWindow
 		{
-			return this._nativeWindow;
+			return _nativeWindow;
 		}
 
 		public function set alertType(alertType:String):void
 		{
-			this._alertType = alertType;
+			_alertType = alertType;
 		}
 
 		public function get alertType():String
 		{
-			return this._alertType;
+			return _alertType;
 		}
 
 		public function set icons(icons:Array):void
 		{
-			this._icons = icons;
+			_icons = icons;
 		}
 
 		public function get icons():Array
 		{
-			return this._icons;
+			return _icons;
 		}
 
 		public function set toolTip(toolTip:String):void
 		{
-			this._toolTip = toolTip;
+			_toolTip = toolTip;
 		}
 
 		public function get toolTip():String
 		{
-			return this._toolTip;
+			return _toolTip;
 		}
 	}
 }

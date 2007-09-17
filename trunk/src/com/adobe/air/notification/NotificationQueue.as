@@ -1,69 +1,81 @@
 package com.adobe.air.notification
 {           
-    import flash.utils.Timer;
-    import flash.events.TimerEvent;
-    import flash.events.Event;
-    import flash.geom.Rectangle;
     import flash.display.Screen;
+    import flash.geom.Rectangle;
     
     public class NotificationQueue
-    {   
+    {
 
-        private var queue:Array;
+        private var _queue: Array;
 
         public function NotificationQueue()
         {
-            this.queue = new Array();
+            _queue = new Array();
         }
 
-        public function addNotification(notification:Notification):void
-        {
-            this.queue.push(notification);
-            if (this.queue.length == 1)
-            {
+		public function get queue(): Array
+		{
+			return _queue;
+		}
+		
+		public function addNotification(notification: Notification): void
+		{
+            queue.push(notification);
+		}
+		
+		public function startNotifying(): void
+		{
+            if (canStart)
                 start();
-            }
+		}
+
+        public function get length(): uint
+        {
+        	return queue.length;
         }
+        
+        private var _canStart: Boolean = true;
+        
+        public function get canStart(): Boolean
+        {
+        	return _canStart;
+        }
+
+		public function set canStart(value: Boolean): void
+		{
+			if (_canStart != value)
+			{
+				_canStart = value;
+				if (_canStart)
+					start();				
+			}
+		}        
         
         private function start():void
         {
-            if (this.queue.length == 0) return;
-            var n:Notification = this.queue.shift() as Notification;
-            var bounds:Rectangle;
-            var screen:Screen = Screen.mainScreen;
+        	if (!canStart) return;
+            if (length == 0) return;
+        	canStart = false;
+
+            var n: Notification = queue.shift() as Notification; 
+            var screen: Screen = Screen.mainScreen;
 			switch (n.position)
             {
                 case Notification.TOP_LEFT:
-                    bounds = new Rectangle(screen.visibleBounds.x, screen.visibleBounds.y, n.width, n.height);
-                    n.bounds = bounds;
+                    n.bounds = new Rectangle(screen.visibleBounds.x + 2, screen.visibleBounds.y + 2, n.width, n.height);
                     break;
                 case Notification.TOP_RIGHT:
-                    bounds = new Rectangle(screen.visibleBounds.width - n.width, screen.visibleBounds.y, n.width, n.height);
-                    n.bounds = bounds;
+                    n.bounds = new Rectangle(screen.visibleBounds.width - (n.width + 2), screen.visibleBounds.y + 2, n.width, n.height);
                     break;
                 case Notification.BOTTOM_LEFT:
-                    bounds = new Rectangle(screen.visibleBounds.x, screen.visibleBounds.height - n.height, n.width, n.height);
-                    n.bounds = bounds;
+                    n.bounds = new Rectangle(screen.visibleBounds.x + 2, screen.visibleBounds.height - (n.height + 2), n.width, n.height);
                     break;
                 case Notification.BOTTOM_RIGHT:
-                    bounds = new Rectangle(screen.visibleBounds.width - n.width, screen.visibleBounds.height - n.height, n.width, n.height);
-                    n.bounds = bounds;
+                    n.bounds = new Rectangle(screen.visibleBounds.width - (n.width + 2) , screen.visibleBounds.height - (n.height + 2), n.width, n.height);
                     break;
             }
 			n.alwaysInFront = true;
-            n.visible = true;
-            var t:Timer = new Timer(n.duration);
-            t.addEventListener(TimerEvent.TIMER,
-                function (e:Event):void
-                {
-                    n.close();
-                    t.stop();
-                    if (queue.length > 0)
-                    {
-                        start();
-                    }
-                });
-            t.start();
+			n.visible = true;
         }
     }
 }

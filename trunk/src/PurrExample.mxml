@@ -1,18 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:WindowedApplication xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" creationComplete="init();">
+<mx:WindowedApplication xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="onCreationComplete()">
 	<mx:Script>
 		<![CDATA[
 			import com.adobe.air.notification.Purr;
 			import com.adobe.air.notification.Notification;
-			private function init():void
+
+			private const iconURL: String = "smile.gif";
+
+			private function onCreationComplete(): void
 			{
-				var purr:Purr = new Purr(1);
+	            var loader: Loader = new Loader();
+	            loader.contentLoaderInfo.addEventListener(Event.COMPLETE, completeHandler);
+	            loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, ioErrorHandler);
+
+	            var request: URLRequest = new URLRequest(iconURL);
+	            loader.load(request);
+			}
+
+	        private function completeHandler(event: Event): void
+	        {
+				purr.setIcons([Bitmap(Loader(event.target.loader).content).bitmapData], "this is tooltip");
+				var m: NativeMenu = new NativeMenu();
+				m.addItem(new NativeMenuItem('Test'));
+				m.addItem(new NativeMenuItem('Test1'));
+				purr.setMenu(m);
+	        }
+
+	        private function ioErrorHandler(event: IOErrorEvent): void
+	        {
+	            trace("Unable to load image: " + iconURL);
+	        }
+
+			private var purr: Purr = new Purr(1);
+
+			private function onClick(): void
+			{
+//				purr.addNotification("This is a title", 
+//									 "This is a message This is a message This is a message This is a message This is a message This is a message This is a message This is a message This is a message This is a message This is a message This is a message This is a message This is a message ");
+
+				for (var i:int = 0; i < 10; i++)
+				{
+					purr.addNotification("This is a title", "This is a message " + i, Notification.BOTTOM_RIGHT, 5, iconURL);
+					purr.addNotification("This is a title", "This is a message " + i, Notification.TOP_LEFT, 5, iconURL);
+				}
+				purr.start();
 				purr.alert("informational", Shell.shell.activeWindow);
-				var n1:Notification = new Notification();
-				n1.title = "This is a title";
-				n1.message = "This is a message";
-				purr.addNotification(n1);
 			}
 		]]>
 	</mx:Script>
+	<mx:Button click="onClick()" label="Click Me"/>
 </mx:WindowedApplication>
