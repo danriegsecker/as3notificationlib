@@ -1,64 +1,68 @@
 package com.adobe.air.notification
 {           
     import flash.display.Screen;
+    import flash.events.Event;
     import flash.geom.Rectangle;
     
     public class NotificationQueue
     {
 
-        private var _queue: Array;
+        private var queue:Array;
+        private var playing:Boolean;
+        private var paused:Boolean;
 
         public function NotificationQueue()
         {
-            _queue = new Array();
+            queue = new Array();
+            playing = false;
+            paused = false;
         }
-
-		public function get queue(): Array
-		{
-			return _queue;
-		}
 		
-		public function addNotification(notification: Notification): void
+		public function addNotification(notification:Notification):void
 		{
             queue.push(notification);
-		}
-		
-		public function startNotifying(): void
-		{
-            if (canStart)
-                start();
+            if (queue.length == 1 && !playing)
+            {
+            	playing = true;
+            	run();
+            }
 		}
 
-        public function get length(): uint
+        public function get length():uint
         {
         	return queue.length;
         }
-        
-        private var _canStart: Boolean = true;
-        
-        public function get canStart(): Boolean
-        {
-        	return _canStart;
-        }
 
-		public function set canStart(value: Boolean): void
+		public function pause():void
 		{
-			if (_canStart != value)
-			{
-				_canStart = value;
-				if (_canStart)
-					start();				
-			}
-		}        
-        
-        private function start():void
-        {
-        	if (!canStart) return;
-            if (length == 0) return;
-        	canStart = false;
+			this.paused = true;
+		}
 
-            var n: Notification = queue.shift() as Notification; 
-            var screen: Screen = Screen.mainScreen;
+		public function resume():void
+		{
+			this.paused = false;
+			run();
+		}
+        
+        private function run():void
+        {
+        	if (paused || queue.length == 0) return;
+            var n:Notification = queue[0] as Notification;
+            n.addEventListener(Event.CLOSE,
+            	function(e:Event):void
+            	{
+            		queue.shift();
+            		if (queue.length > 0)
+            		{
+            			run();
+            		}
+            		else
+            		{
+            			playing = false;
+            			return;
+            		}
+            	});
+            var screen:Screen = Screen.mainScreen;
 			switch (n.position)
             {
                 case Notification.TOP_LEFT:
