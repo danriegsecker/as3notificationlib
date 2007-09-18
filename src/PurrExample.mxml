@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:WindowedApplication xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="onCreationComplete()">
+<mx:WindowedApplication xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="onCreationComplete()" layout="absolute">
 	<mx:Script>
 		<![CDATA[
+			import com.adobe.air.notification.NotificationClickedEvent;
 			import com.adobe.air.notification.Purr;
 			import com.adobe.air.notification.Notification;
 
 			private const iconURL: String = "smile.gif";
+			private var count:uint;
+			private var timer:Timer;
+			private var purr:Purr = new Purr(1);
 
-			private function onCreationComplete(): void
+			private function onCreationComplete():void
 			{
 	            var loader: Loader = new Loader();
 	            loader.contentLoaderInfo.addEventListener(Event.COMPLETE, completeHandler);
@@ -15,38 +19,92 @@
 
 	            var request: URLRequest = new URLRequest(iconURL);
 	            loader.load(request);
+	            
+	            timer = new Timer(3000, 1);
+				timer.addEventListener(TimerEvent.TIMER,
+					function(e:TimerEvent):void
+					{
+						purr.alert(alertType.selectedLabel, Shell.shell.activeWindow);
+					});
 			}
 
-	        private function completeHandler(event: Event): void
+	        private function completeHandler(event:Event):void
 	        {
-				purr.setIcons([Bitmap(Loader(event.target.loader).content).bitmapData], "this is tooltip");
+				purr.setIcons([Bitmap(Loader(event.target.loader).content).bitmapData], "This is tooltip");
 				var m: NativeMenu = new NativeMenu();
-				m.addItem(new NativeMenuItem('Test'));
-				m.addItem(new NativeMenuItem('Test1'));
+				m.addItem(new NativeMenuItem('Menu Item 1'));
+				m.addItem(new NativeMenuItem('Menu Item 2'));
 				purr.setMenu(m);
 	        }
 
-	        private function ioErrorHandler(event: IOErrorEvent): void
+	        private function ioErrorHandler(event:IOErrorEvent):void
 	        {
 	            trace("Unable to load image: " + iconURL);
 	        }
 
-			private var purr: Purr = new Purr(1);
-
-			private function onClick(): void
+			private function addNotification(where:String):void
 			{
-//				purr.addNotification("This is a title", 
-//									 "This is a message This is a message This is a message This is a message This is a message This is a message This is a message This is a message This is a message This is a message This is a message This is a message This is a message This is a message ");
-
-				for (var i:int = 0; i < 10; i++)
+				var title:String = "This is a title";
+				var message:String = "This is a message #" + (++count);
+				if (noEvents.selected)
 				{
-					purr.addNotification("This is a title", "This is a message " + i, Notification.BOTTOM_RIGHT, 5, iconURL);
-					purr.addNotification("This is a title", "This is a message " + i, Notification.TOP_LEFT, 5, iconURL);
+					purr.addNotificationByParams(title, message, where, 5, iconURL);
 				}
-				purr.start();
-				purr.alert("informational", Shell.shell.activeWindow);
+				else
+				{
+					var n:Notification = new Notification(title, message, where, 5, iconURL);
+					n.id = String(count);
+					n.addEventListener(NotificationClickedEvent.NOTIFICATION_CLICKED_EVENT,
+						function(e:NotificationClickedEvent):void
+						{
+							trace("You clicked on notification: " + Notification(e.target).id);
+						});
+					purr.addNotification(n);
+				}
 			}
+
+			private function alert():void
+			{
+				timer.start();
+			}
+
+			private function pause():void
+			{
+				pauseButton.enabled = false;
+				resumeButton.enabled = true;
+				this.purr.pause();
+			}
+
+			private function resume():void
+			{
+				pauseButton.enabled = true;
+				resumeButton.enabled = false;
+				this.purr.resume();
+			}
+
 		]]>
 	</mx:Script>
-	<mx:Button click="onClick()" label="Click Me"/>
+	<mx:Button click="addNotification(Notification.TOP_LEFT)" label="Top Left" top="2" left="2"/>
+	<mx:Button click="addNotification(Notification.TOP_RIGHT)" label="Top Right" top="2" right="2"/>
+	<mx:Button click="addNotification(Notification.BOTTOM_RIGHT)" label="Bottom Right" right="2" bottom="2"/>
+	<mx:Button click="addNotification(Notification.BOTTOM_LEFT)" label="Bottom Left" left="2" bottom="2"/>
+	<mx:Box width="100%" height="100%" verticalAlign="middle" horizontalAlign="center">
+		<mx:VBox>
+			<mx:HBox>
+				<mx:ComboBox id="alertType">
+					<mx:dataProvider>
+						<mx:Array>
+							<mx:String>{NotificationType.INFORMATIONAL}</mx:String>
+							<mx:String>{NotificationType.CRITICAL}</mx:String>
+						</mx:Array>
+					</mx:dataProvider>
+				</mx:ComboBox>
+				<mx:Button label="Alert in 3 seconds" click="alert();"/>
+			</mx:HBox>
+		</mx:VBox>
+		<mx:Button id="pauseButton" label="Pause" click="pause();"/>
+		<mx:Button id="resumeButton" label="Resume" click="resume()" enabled="false"/>
+		<mx:RadioButton groupName="getEvents" id="yesEvents" label="Capture click event" selected="true"/>
+		<mx:RadioButton groupName="getEvents" id="noEvents" label="Don't capture click event"/>
+	</mx:Box>
 </mx:WindowedApplication>
