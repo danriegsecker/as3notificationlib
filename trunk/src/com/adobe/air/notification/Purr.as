@@ -10,24 +10,27 @@ package com.adobe.air.notification
 	
 	public class Purr
 	{
-		private var topLeftQ: NotificationQueue;
-		private var topRightQ: NotificationQueue;
-		private var bottomLeftQ: NotificationQueue;
-		private var bottomRightQ: NotificationQueue;
+		private var topLeftQ:NotificationQueue;
+		private var topRightQ:NotificationQueue;
+		private var bottomLeftQ:NotificationQueue;
+		private var bottomRightQ:NotificationQueue;
+		private var paused:Boolean;
 
-		public function Purr(idleThreshold: uint)
+		public function Purr(idleThreshold:uint)
 		{
 			topLeftQ = new NotificationQueue();
 			topRightQ = new NotificationQueue();
 			bottomLeftQ = new NotificationQueue();
 			bottomRightQ = new NotificationQueue();
 
+			paused = false;
+
 			Shell.shell.idleThreshold = idleThreshold * 60;
-			Shell.shell.addEventListener(Event.USER_IDLE, onIdle);
-			Shell.shell.addEventListener(Event.USER_PRESENT, onPresent);
+			Shell.shell.addEventListener(Event.USER_IDLE, function(e:Event):void {pause();});
+			Shell.shell.addEventListener(Event.USER_PRESENT, function(e:Event):void {resume();});
 		}
 
-		public function alert(alertType: String, nativeWindow: NativeWindow): void
+		public function alert(alertType:String, nativeWindow:NativeWindow):void
 		{
 			if (Shell.supportsDockIcon)
 			{
@@ -36,48 +39,50 @@ package com.adobe.air.notification
 			else if (Shell.supportsSystemTrayIcon)
 			{
 				if (nativeWindow != null)
+				{
 					nativeWindow.notifyUser(alertType);
+				}
 			}
 		}
 
-		public function addNotification(title: String, message: String, position: String = null, duration: uint = 5, icoURL: String = null): Notification
+		public function addNotification(n:Notification):void
 		{
-            var result: Notification = null;
-        	if (position == null)
-        		position = Notification.BOTTOM_RIGHT;
-			var queue: NotificationQueue = null;
-			switch (position)
+			switch (n.position)
             {
                 case Notification.TOP_LEFT:
-                    queue = topLeftQ;
+                    topLeftQ.addNotification(n);
                     break;
                 case Notification.TOP_RIGHT:
-                    queue = topRightQ;
+                    topRightQ.addNotification(n);
                     break;
                 case Notification.BOTTOM_LEFT:
-                    queue = bottomLeftQ;
+                    bottomLeftQ.addNotification(n);
                     break;
                 case Notification.BOTTOM_RIGHT:
-                    queue = bottomRightQ;
+                    bottomRightQ.addNotification(n);
                     break;
-            }
-			if (queue != null)
-			{
-				result = new Notification(queue, title, message, position, duration, icoURL);
-				queue.addNotification(result);
-   			}
-            return result;
-		}
-		
-		public function start(): void
-		{
-			topLeftQ.startNotifying();
-			topRightQ.startNotifying();
-			bottomLeftQ.startNotifying();
-			bottomRightQ.startNotifying();
+            }			
 		}
 
-		public function setMenu(menu: NativeMenu): void
+		public function addNotificationByParams(title:String, message:String, position:String = null, duration:uint = 5, icoURL:String = null):Notification
+		{
+        	if (position == null)
+        	{
+	            if (Shell.supportsDockIcon)
+	            {
+	            	position = Notification.TOP_RIGHT;
+	            }
+	            else if (Shell.supportsSystemTrayIcon)
+	            {
+	            	position = Notification.BOTTOM_RIGHT;
+	            }
+        	}
+			var n:Notification = new Notification(title, message, position, duration, icoURL);
+			addNotification(n);
+            return n;
+		}
+
+		public function setMenu(menu:NativeMenu): void
 		{
 			if (Shell.supportsDockIcon)
 			{
@@ -89,8 +94,7 @@ package com.adobe.air.notification
 			}
 		}
 
-/*
-		public function getMenu(): NativeMenu
+		public function getMenu():NativeMenu
 		{
 			if (Shell.supportsDockIcon)
 			{
@@ -102,9 +106,8 @@ package com.adobe.air.notification
 			}
 			return null;
 		}
-*/
 
-		public function setIcons(icons: Array, tooltip: String = null): void
+		public function setIcons(icons:Array, tooltip:String = null):void
 		{
 			if (Shell.shell.icon is InteractiveIcon)
 			{
@@ -116,8 +119,7 @@ package com.adobe.air.notification
 			}
 		}
 
-/*
-		public function getIcons(): Array
+		public function getIcons():Array
 		{
 			if (Shell.shell.icon is InteractiveIcon)
 			{
@@ -126,7 +128,7 @@ package com.adobe.air.notification
 			return null;
 		}
 
-		public function getToolTip(): String
+		public function getToolTip():String
 		{
 			if (Shell.supportsSystemTrayIcon)
 			{
@@ -134,24 +136,28 @@ package com.adobe.air.notification
 			}
 			return null;
 		}
-*/
 
-		//// Private Functions ////
-		private function onIdle(e: Event): void
+		public function pause():void
 		{
-			topLeftQ.canStart = false;
-			topRightQ.canStart = false;
-			bottomLeftQ.canStart = false;
-			bottomRightQ.canStart = false;
+			this.topLeftQ.pause();
+			this.topRightQ.pause();
+			this.bottomLeftQ.pause();
+			this.bottomRightQ.pause();
+			this.paused = true;
 		}
 
-		private function onPresent(e: Event): void
+		public function resume():void
 		{
-			topLeftQ.canStart = true;
-			topRightQ.canStart = true;
-			bottomLeftQ.canStart = true;
-			bottomRightQ.canStart = true;
+			this.topLeftQ.resume();
+			this.topRightQ.resume();
+			this.bottomLeftQ.resume();
+			this.bottomRightQ.resume();
+			this.paused = false;
 		}
 
+		public function isPaused():Boolean
+		{
+			return this.paused;
+		}
 	}
 }
