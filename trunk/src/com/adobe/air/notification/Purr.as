@@ -5,6 +5,7 @@ package com.adobe.air.notification
 	import flash.display.NativeMenu;
 	import flash.display.NativeWindow;
 	import flash.display.SystemTrayIcon;
+	import flash.display.Bitmap;
 	import flash.events.Event;
 	import flash.system.Shell;
 	
@@ -64,7 +65,7 @@ package com.adobe.air.notification
             }			
 		}
 
-		public function addNotificationByParams(title:String, message:String, position:String = null, duration:uint = 5, icoURL:String = null):Notification
+		public function addNotificationByParams(title:String, message:String, position:String = null, duration:uint = 5, bitmap:Bitmap = null):Notification
 		{
         	if (position == null)
         	{
@@ -77,7 +78,7 @@ package com.adobe.air.notification
 	            	position = Notification.BOTTOM_RIGHT;
 	            }
         	}
-			var n:Notification = new Notification(title, message, position, duration, icoURL);
+			var n:Notification = new Notification(title, message, position, duration, bitmap);
 			addNotification(n);
             return n;
 		}

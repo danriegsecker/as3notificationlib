@@ -7,6 +7,7 @@
 			import com.adobe.air.notification.Notification;
 
 			private const iconURL: String = "smile.gif";
+			private var bmp: Bitmap = null;
 			private var count:uint;
 			private var timer:Timer;
 			private var purr:Purr = new Purr(1);
@@ -30,7 +31,8 @@
 
 	        private function completeHandler(event:Event):void
 	        {
-				purr.setIcons([Bitmap(Loader(event.target.loader).content).bitmapData], "This is tooltip");
+	        	bmp = Bitmap(Loader(event.target.loader).content);
+				purr.setIcons([bmp.bitmapData], "This is tooltip");
 				var m: NativeMenu = new NativeMenu();
 				m.addItem(new NativeMenuItem('Menu Item 1'));
 				m.addItem(new NativeMenuItem('Menu Item 2'));
@@ -48,11 +50,11 @@
 				var message:String = "This is a message #" + (++count);
 				if (noEvents.selected)
 				{
-					purr.addNotificationByParams(title, message, where, 5, iconURL);
+					purr.addNotificationByParams(title, message, where, 5, bmp);
 				}
 				else
 				{
-					var n:Notification = new Notification(title, message, where, 5, iconURL);
+					var n:Notification = new Notification(title, message, where, 5, bmp);
 					n.id = String(count);
 					n.addEventListener(NotificationClickedEvent.NOTIFICATION_CLICKED_EVENT,
 						function(e:NotificationClickedEvent):void
