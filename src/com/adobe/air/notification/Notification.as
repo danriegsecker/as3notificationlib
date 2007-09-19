@@ -2,7 +2,6 @@ package com.adobe.air.notification
 {           
     import flash.display.Bitmap;
     import flash.display.BitmapData;
-    import flash.display.Loader;
     import flash.display.NativeWindow;
     import flash.display.NativeWindowInitOptions;
     import flash.display.NativeWindowSystemChrome;
@@ -10,13 +9,9 @@ package com.adobe.air.notification
     import flash.display.Sprite;
     import flash.display.StageAlign;
     import flash.display.StageScaleMode;
-    import flash.events.Event;
-    import flash.events.EventDispatcher;
-    import flash.events.IOErrorEvent;
     import flash.events.MouseEvent;
     import flash.events.TimerEvent;
     import flash.geom.Rectangle;
-    import flash.net.URLRequest;
     import flash.text.TextField;
     import flash.text.TextFieldAutoSize;
     import flash.text.TextFormat;
@@ -41,14 +36,14 @@ package com.adobe.air.notification
         private var _title:String;
         private var _height:String;
         private var _width:String;
-		private var _iconURL:String;
 
 		private var sprite:Sprite;
         private var messageLabel:TextField;
        	private var titleLabel:TextField;
        	private var closeTimer:Timer;
-		
-        public function Notification(title:String, message:String, position:String, duration:uint, icoURL:String = null)
+       	private var _bitmap: Bitmap;
+
+        public function Notification(title:String, message:String, position:String, duration:uint, bitmap: Bitmap = null)
         {   
             var initOpts:NativeWindowInitOptions = new NativeWindowInitOptions();
             initOpts.appearsInWindowMenu = false;
@@ -63,13 +58,14 @@ package com.adobe.air.notification
 
             visible = false;
 
+        	this.bitmap = bitmap;
+
 			createControls();
 
         	this.title = title;
         	this.message = message;
         	this.position = position;
             this.duration = duration;
-        	this.iconURL = icoURL;
 	    }
 
 		protected function createControls():void
@@ -109,12 +105,11 @@ package com.adobe.air.notification
             this.messageLabel = new TextField();
 
             this.messageLabel.autoSize = TextFieldAutoSize.LEFT;
-            this.messageLabel.border = true;
             this.messageLabel.backgroundColor = 0xFFFFFF;
 
             var format:TextFormat = new TextFormat();
             format.font = "Verdana";
-            format.color = 0x000000;
+            format.color = 0xFFFFFF;
             format.size = 10;
 			format.align = TextFormatAlign.LEFT;
 
@@ -133,58 +128,32 @@ package com.adobe.air.notification
             this.width = 400;
             this.height = 100;
 
-            this.sprite.graphics.beginFill(0xFFFFFF);
-            this.sprite.graphics.lineStyle(1, 0xFFFFFF);
-            this.sprite.graphics.drawRoundRect(2, 18, 396, 80, 10, 10);
-            this.sprite.graphics.endFill();
-            this.sprite.graphics.beginFill(0xFFFFFF);
+            this.sprite.graphics.beginFill(0x333333);
             this.sprite.graphics.drawRoundRect(0, 0, 400, 100, 10, 10);
             this.sprite.graphics.endFill();
 
-            var button:CustomSimpleButton = new CustomSimpleButton();
-            sprite.addChild(button);
-            button.x = width - button.width - 2;
-			button.y = button.y + 2;
-			button.addEventListener(MouseEvent.CLICK, function():void {close();});
-
 			this.stage.addChild(sprite);
-
-            var loader:Loader = new Loader();
-            loader.contentLoaderInfo.addEventListener(Event.COMPLETE, completeHandler);
-            loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, ioErrorHandler);
-
-			if (this.iconURL != null)
-			{
-	            var request:URLRequest = new URLRequest(iconURL);
-	            loader.load(request);
-			}
 
 			this.sprite.addEventListener(MouseEvent.CLICK, notificationClick);
         	this.messageLabel.addEventListener(MouseEvent.CLICK, notificationClick);
        		this.titleLabel.addEventListener(MouseEvent.CLICK, notificationClick);
+
+			if (this.bitmap != null)
+			{
+	            var bitmapData:BitmapData = this.bitmap.bitmapData;
+	            this.bitmap.x = (52 / 2) - (bitmapData.width / 2);
+	            this.bitmap.y = (100 / 2) - (bitmapData.height / 2);
+	            this.bitmap.addEventListener(MouseEvent.CLICK, notificationClick);
+	            this.sprite.addChild(this.bitmap);
+			}
 		}
-
-        private function completeHandler(event:Event):void 
-        {
-        	var loader:Loader = Loader(event.target.loader)
-            var bitmapData:BitmapData = Bitmap(loader.content).bitmapData;
-            loader.x = (52 / 2) - (bitmapData.width / 2);
-            loader.y = (100 / 2) - (bitmapData.height / 2);
-            loader.addEventListener(MouseEvent.CLICK, notificationClick);
-            sprite.addChild(loader);
-        }
-
-        private function ioErrorHandler(event:IOErrorEvent):void 
-        {
-            trace("Unable to load image: " + iconURL);
-        }
 
 		private function superClose():void
 		{
 			super.close();
 		}
 
-		public override function close():void
+		override public function close():void
 		{
 	        if (this.closeTimer != null)
 	        {
@@ -228,18 +197,18 @@ package com.adobe.air.notification
 					{
 						alphaTimer.stop();
 						var nAlpha:Number = sprite.alpha;
-						nAlpha = nAlpha + .1;
-						if (nAlpha > .6)
+						nAlpha = nAlpha + .9;
+						if (nAlpha > .9)
 						{
-							nAlpha = .6;
+							nAlpha = .9;
 						}
 						sprite.alpha = nAlpha;
 						messageLabel.alpha = sprite.alpha;
-						if (Math.round(sprite.alpha) < .6)
+						if (Math.round(sprite.alpha) < .9)
 						{
 							alphaTimer.start();
 						}
-						else 
+						else
 						{
 							closeTimer = new Timer(duration * 1000);
 				            closeTimer.addEventListener(TimerEvent.TIMER,
@@ -254,16 +223,16 @@ package com.adobe.air.notification
 			}
 		}
 
-		public function set iconURL(url:String):void
+		public function set bitmap(bitmap: Bitmap):void
 		{
-			this._iconURL = url;
+			this._bitmap = bitmap;
 		}
 		
-		public function get iconURL():String
+		public function get bitmap():Bitmap
 		{
-			return this._iconURL;
+			return this._bitmap;
 		}
-        
+
         public function set position(position:String):void
         {
         	this._position = position;
@@ -334,48 +303,5 @@ package com.adobe.air.notification
 			this.dispatchEvent(new NotificationClickedEvent());
 			this.close();
 		}
-    }
-}
-
-import flash.display.DisplayObject;
-import flash.display.Shape;
-import flash.display.SimpleButton;
-
-class CustomSimpleButton extends SimpleButton 
-{
-    private var upColor:uint   = 0xFFCC00;
-    private var overColor:uint = 0xCCFF00;
-    private var downColor:uint = 0x00CCFF;
-    private var size:uint      = 15;
-
-    public function CustomSimpleButton() 
-    {
-        downState      = new ButtonDisplayState(downColor, size);
-        overState      = new ButtonDisplayState(overColor, size);
-        upState        = new ButtonDisplayState(upColor, size);
-        hitTestState   = new ButtonDisplayState(upColor, size * 2);
-        hitTestState.x = -(size / 4);
-        hitTestState.y = hitTestState.x;
-        useHandCursor  = true;
-    }
-}
-
-class ButtonDisplayState extends Shape 
-{
-    private var bgColor:uint;
-    private var size:uint;
-
-    public function ButtonDisplayState(bgColor:uint, size:uint)
-    {
-        this.bgColor = bgColor;
-        this.size 	 = size;
-        draw();
-    }
-
-    private function draw():void
-    {
-        graphics.beginFill(bgColor);
-        graphics.drawRoundRect(0, 0, size, size, 1, 1);
-        graphics.endFill();
     }
 }
