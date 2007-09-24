@@ -11,6 +11,7 @@ package com.adobe.air.notification
     import flash.display.StageScaleMode;
     import flash.events.MouseEvent;
     import flash.events.TimerEvent;
+    import flash.filters.DropShadowFilter;
     import flash.geom.Rectangle;
     import flash.text.TextField;
     import flash.text.TextFieldAutoSize;
@@ -37,12 +38,13 @@ package com.adobe.air.notification
         private var _title:String;
         private var _height:String;
         private var _width:String;
+       	private var _bitmap: Bitmap;
 
 		private var sprite:Sprite;
         private var messageLabel:TextField;
        	private var titleLabel:TextField;
        	private var closeTimer:Timer;
-       	private var _bitmap: Bitmap;
+       	private var alphaTimer:Timer;
 
         public function Notification(title:String, message:String, position:String, duration:uint, bitmap: Bitmap = null)
         {        	
@@ -59,7 +61,10 @@ package com.adobe.air.notification
 
             visible = false;
 
-        	this.bitmap = bitmap;
+			if (bitmap != null)
+			{
+    	    	this.bitmap = new Bitmap(bitmap.bitmapData);
+   			}
 
 			createControls();
 
@@ -73,7 +78,7 @@ package com.adobe.air.notification
 
 		protected function createControls():void
 		{
-			var left_Pos: int = (this.bitmap != null) ? 56 : 2;
+			var leftPos: int = (this.bitmap != null) ? 56 : 2;
 			var cm:ContextMenu = new ContextMenu();
 			cm.hideBuiltInItems();
 			
@@ -83,49 +88,46 @@ package com.adobe.air.notification
 			this.sprite = new Sprite();
 			this.sprite.alpha = 0;
 
+			// title
             this.titleLabel = new TextField();
             this.titleLabel.autoSize = TextFieldAutoSize.LEFT;
-            this.titleLabel.backgroundColor = 0xFFFFFF;
-
-            var titleFormat:TextFormat = new TextFormat();
-            titleFormat.font = 'Verdana';
+            var titleFormat:TextFormat = titleLabel.defaultTextFormat;
+            titleFormat.font = "Verdana";
             titleFormat.bold = true;
             titleFormat.color = 0xFFFFFF;
             titleFormat.size = 10;
 			titleFormat.align = TextFormatAlign.LEFT;
-
             this.titleLabel.defaultTextFormat = titleFormat;
-            this.titleLabel.alpha = 0;
             this.titleLabel.multiline = false;
             this.titleLabel.selectable = false;
             this.titleLabel.wordWrap = false;
-
             this.titleLabel.contextMenu = cm;
-            this.titleLabel.x = left_Pos;
+            this.titleLabel.x = leftPos;
             this.titleLabel.y = 2;
-            this.sprite.addChild(titleLabel);
-            
+            var titleSprite:Sprite = new Sprite();
+            titleSprite.addChild(titleLabel);
+            titleSprite.filters = [new DropShadowFilter(5, 45, 0x000000, .9)];
+            this.sprite.addChild(titleSprite);
+
+			// message            
             this.messageLabel = new TextField();
             this.messageLabel.autoSize = TextFieldAutoSize.LEFT;
-            this.messageLabel.backgroundColor = 0xFFFFFF;
-
-            var format:TextFormat = new TextFormat();
-            format.font = 'Verdana';
-            format.color = 0xFFFFFF;
-            format.size = 10;
-			format.align = TextFormatAlign.LEFT;
-
-            this.messageLabel.defaultTextFormat = format;
-            this.messageLabel.alpha = 0;
+            var messageFormat:TextFormat = messageLabel.defaultTextFormat;
+            messageFormat.font = "Verdana";
+            messageFormat.color = 0xFFFFFF;
+            messageFormat.size = 10;
+			messageFormat.align = TextFormatAlign.LEFT;
+            this.messageLabel.defaultTextFormat = messageFormat;
             this.messageLabel.multiline = true;
             this.messageLabel.selectable = false;
             this.messageLabel.wordWrap = true;
-
             this.messageLabel.contextMenu = cm;
-            this.messageLabel.x = left_Pos;
+            this.messageLabel.x = leftPos;
             this.messageLabel.y = 19;
-
-            this.sprite.addChild(messageLabel);
+            var messageSprite:Sprite = new Sprite();
+            messageSprite.addChild(messageLabel);
+            messageSprite.filters = [new DropShadowFilter(5, 45, 0x000000, .9)];
+            this.sprite.addChild(messageSprite);
 
             this.width = 400;
             this.height = 100;
@@ -146,7 +148,8 @@ package com.adobe.air.notification
 	            this.bitmap.x = (52 / 2) - (bitmapData.width / 2);
 	            this.bitmap.y = (100 / 2) - (bitmapData.height / 2);
 	            this.bitmap.addEventListener(MouseEvent.CLICK, notificationClick);
-	            this.sprite.addChild(this.bitmap);
+	            bitmap.filters = [new DropShadowFilter(5, 45, 0x000000, .9)];
+	            this.sprite.addChild(bitmap);
 			}
 		}
 
@@ -163,19 +166,20 @@ package com.adobe.air.notification
 	            this.closeTimer = null;
 	        }
 
-			var alphaTimer:Timer = new Timer(50);
+			if (this.alphaTimer != null)
+			{
+				this.alphaTimer.stop();
+				this.alphaTimer = null;
+			}
+
+			alphaTimer = new Timer(25);
 			alphaTimer.addEventListener(TimerEvent.TIMER,
 				function (e:TimerEvent):void
 				{
 					alphaTimer.stop();
 					var nAlpha:Number = sprite.alpha;
-					nAlpha = nAlpha - .1;
-					if (nAlpha < 0)
-					{
-						nAlpha = 0;
-					}
+					nAlpha = nAlpha - .01;
 					sprite.alpha = nAlpha;
-					messageLabel.alpha = sprite.alpha;
 					if (sprite.alpha <= 0)
 					{
 						superClose();
@@ -193,20 +197,15 @@ package com.adobe.air.notification
 			super.visible = value;
 			if (value == true)
 			{
-				var alphaTimer:Timer = new Timer(50);
+				alphaTimer = new Timer(10);
 				alphaTimer.addEventListener(TimerEvent.TIMER,
 					function (e:TimerEvent):void
 					{
 						alphaTimer.stop();
 						var nAlpha:Number = sprite.alpha;
-						nAlpha = nAlpha + .9;
-						if (nAlpha > .9)
-						{
-							nAlpha = .9;
-						}
+						nAlpha = nAlpha + .01;
 						sprite.alpha = nAlpha;
-						messageLabel.alpha = sprite.alpha;
-						if (Math.round(sprite.alpha) < .9)
+						if (sprite.alpha < .9)
 						{
 							alphaTimer.start();
 						}
