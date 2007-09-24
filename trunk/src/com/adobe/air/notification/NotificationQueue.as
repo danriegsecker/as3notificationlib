@@ -66,10 +66,10 @@ package com.adobe.air.notification
 			switch (n.position)
             {
                 case Notification.TOP_LEFT:
-                    n.bounds = new Rectangle(screen.visibleBounds.x + 2, screen.visibleBounds.y + 2, n.width, n.height);
+                    n.bounds = new Rectangle(screen.visibleBounds.x + 2, screen.visibleBounds.y + 3, n.width, n.height);
                     break;
                 case Notification.TOP_RIGHT:
-                    n.bounds = new Rectangle(screen.visibleBounds.width - (n.width + 2), screen.visibleBounds.y + 2, n.width, n.height);
+                    n.bounds = new Rectangle(screen.visibleBounds.width - (n.width + 2), screen.visibleBounds.y + 3, n.width, n.height);
                     break;
                 case Notification.BOTTOM_LEFT:
                     n.bounds = new Rectangle(screen.visibleBounds.x + 2, screen.visibleBounds.height - (n.height + 2), n.width, n.height);
