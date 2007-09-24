@@ -109,5 +109,6 @@
 		<mx:Button id="resumeButton" label="Resume" click="resume()" enabled="false"/>
 		<mx:RadioButton groupName="getEvents" id="yesEvents" label="Capture click event" selected="true"/>
 		<mx:RadioButton groupName="getEvents" id="noEvents" label="Don't capture click event"/>
+		
 	</mx:Box>
 </mx:WindowedApplication>
