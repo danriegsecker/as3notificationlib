@@ -20,10 +20,11 @@ package com.adobe.air.notification
     import flash.utils.Timer;
 
 	[Event(name="notificationClickedEvent", type="com.adobeair.notification.NotificationClickedEvent")]
-
+	
     public class Notification
         extends NativeWindow
     {
+
         public static const TOP_LEFT:String = "topLeft";
         public static const TOP_RIGHT:String = "topRight";
         public static const BOTTOM_LEFT:String = "bottomLeft";
@@ -44,7 +45,7 @@ package com.adobe.air.notification
        	private var _bitmap: Bitmap;
 
         public function Notification(title:String, message:String, position:String, duration:uint, bitmap: Bitmap = null)
-        {   
+        {        	
             var initOpts:NativeWindowInitOptions = new NativeWindowInitOptions();
             initOpts.appearsInWindowMenu = false;
             initOpts.hasMenu = false;
@@ -67,9 +68,12 @@ package com.adobe.air.notification
         	this.position = position;
             this.duration = duration;
 	    }
+		
+		private const Left_Pos: int = 56;
 
 		protected function createControls():void
 		{
+			var left_Pos: int = (this.bitmap != null) ? 56 : 2;
 			var cm:ContextMenu = new ContextMenu();
 			cm.hideBuiltInItems();
 			
@@ -81,14 +85,13 @@ package com.adobe.air.notification
 
             this.titleLabel = new TextField();
             this.titleLabel.autoSize = TextFieldAutoSize.LEFT;
-            this.titleLabel.border = false;
             this.titleLabel.backgroundColor = 0xFFFFFF;
 
             var titleFormat:TextFormat = new TextFormat();
-            titleFormat.font = "Verdana";
+            titleFormat.font = 'Verdana';
             titleFormat.bold = true;
             titleFormat.color = 0xFFFFFF;
-            titleFormat.size = 12;
+            titleFormat.size = 10;
 			titleFormat.align = TextFormatAlign.LEFT;
 
             this.titleLabel.defaultTextFormat = titleFormat;
@@ -98,17 +101,16 @@ package com.adobe.air.notification
             this.titleLabel.wordWrap = false;
 
             this.titleLabel.contextMenu = cm;
-            this.titleLabel.x = 2;
+            this.titleLabel.x = left_Pos;
             this.titleLabel.y = 2;
             this.sprite.addChild(titleLabel);
             
             this.messageLabel = new TextField();
-
             this.messageLabel.autoSize = TextFieldAutoSize.LEFT;
             this.messageLabel.backgroundColor = 0xFFFFFF;
 
             var format:TextFormat = new TextFormat();
-            format.font = "Verdana";
+            format.font = 'Verdana';
             format.color = 0xFFFFFF;
             format.size = 10;
 			format.align = TextFormatAlign.LEFT;
@@ -120,7 +122,7 @@ package com.adobe.air.notification
             this.messageLabel.wordWrap = true;
 
             this.messageLabel.contextMenu = cm;
-            this.messageLabel.x = 56;
+            this.messageLabel.x = left_Pos;
             this.messageLabel.y = 19;
 
             this.sprite.addChild(messageLabel);
@@ -223,7 +225,7 @@ package com.adobe.air.notification
 			}
 		}
 
-		public function set bitmap(bitmap: Bitmap):void
+		public function set bitmap(bitmap:Bitmap):void
 		{
 			this._bitmap = bitmap;
 		}
@@ -278,14 +280,14 @@ package com.adobe.air.notification
         public override function set width(width:Number):void
         {
 			super.width = width;
-			this.messageLabel.width = width - (messageLabel.x + 2);
+			this.messageLabel.width = width - (this.messageLabel.x + 2);
 			this.titleLabel.width = width - 8;
         }
 
         public override function set height(height:Number):void
         {
 			super.height = height;
-			this.messageLabel.height = height - (messageLabel.y + 2);
+			this.messageLabel.height = height - (this.messageLabel.y + 2);
         }
                 
         public function get id():String
