@@ -20,7 +20,7 @@ package com.adobe.air.notification
     import flash.ui.ContextMenu;
     import flash.utils.Timer;
 
-	[Event(name="notificationClickedEvent", type="com.adobeair.notification.NotificationClickedEvent")]
+	[Event(name="notificationClickedEvent", type="com.adobe.air.notification.NotificationClickedEvent")]
 	
     public class Notification
         extends NativeWindow
