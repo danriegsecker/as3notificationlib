@@ -144,11 +144,31 @@ package com.adobe.air.notification
 
 			if (this.bitmap != null)
 			{
+				var posX: int = 2;
+				var posY: int = 2;
+				var scaleX: Number = 1;
+				var scaleY: Number = 1;
 	            var bitmapData:BitmapData = this.bitmap.bitmapData;
-	            this.bitmap.x = (52 / 2) - (bitmapData.width / 2);
-	            this.bitmap.y = (100 / 2) - (bitmapData.height / 2);
+	            if (bitmapData.width > 50 || bitmapData.height > 100)
+	            {
+	            	var __x: int = bitmapData.width - 50;
+	            	var __y: int = bitmapData.height - 100;
+            		scaleX = (__x > __y) ? 50 / bitmapData.width : 100 / bitmapData.height;
+	            	scaleY = scaleX;
+	            	posX = 27 - ((bitmapData.width * scaleX) / 2);
+	            	posY = 52 - ((bitmapData.height * scaleY) / 2);
+	            }
+	            else
+	            {
+		            posX = 27 - (bitmapData.width / 2);
+		            posY = 52 - (bitmapData.height / 2);					
+	            }
+	            this.bitmap.scaleX = scaleX;
+	            this.bitmap.scaleY = scaleY;
+	            this.bitmap.x = posX;
+	            this.bitmap.y = posY;
 	            this.bitmap.addEventListener(MouseEvent.CLICK, notificationClick);
-	            bitmap.filters = [new DropShadowFilter(5, 45, 0x000000, .9)];
+	            this.bitmap.filters = [new DropShadowFilter(5, 45, 0x000000, .9)];
 	            this.sprite.addChild(bitmap);
 			}
 		}
