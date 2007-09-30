@@ -64,6 +64,7 @@ package com.adobe.air.notification
 			if (bitmap != null)
 			{
     	    	this.bitmap = new Bitmap(bitmap.bitmapData);
+    	    	this.bitmap.smoothing = true;
    			}
 
 			createControls();
