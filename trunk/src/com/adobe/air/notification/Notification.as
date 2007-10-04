@@ -45,9 +45,10 @@ package com.adobe.air.notification
        	private var titleLabel:TextField;
        	private var closeTimer:Timer;
        	private var alphaTimer:Timer;
+       	private var filters:Array;
 
         public function Notification(title:String, message:String, position:String, duration:uint, bitmap: Bitmap = null)
-        {        	
+        {
             var initOpts:NativeWindowInitOptions = new NativeWindowInitOptions();
             initOpts.appearsInWindowMenu = false;
             initOpts.hasMenu = false;
@@ -66,6 +67,8 @@ package com.adobe.air.notification
     	    	this.bitmap = new Bitmap(bitmap.bitmapData);
     	    	this.bitmap.smoothing = true;
    			}
+
+			this.filters = [new DropShadowFilter(5, 45, 0x000000, .9)];
 
 			createControls();
 
@@ -105,10 +108,8 @@ package com.adobe.air.notification
             this.titleLabel.contextMenu = cm;
             this.titleLabel.x = leftPos;
             this.titleLabel.y = 2;
-            var titleSprite:Sprite = new Sprite();
-            titleSprite.addChild(titleLabel);
-            titleSprite.filters = [new DropShadowFilter(5, 45, 0x000000, .9)];
-            this.sprite.addChild(titleSprite);
+            titleLabel.filters = this.filters;
+            this.sprite.addChild(titleLabel);
 
 			// message            
             this.messageLabel = new TextField();
@@ -125,10 +126,8 @@ package com.adobe.air.notification
             this.messageLabel.contextMenu = cm;
             this.messageLabel.x = leftPos;
             this.messageLabel.y = 19;
-            var messageSprite:Sprite = new Sprite();
-            messageSprite.addChild(messageLabel);
-            messageSprite.filters = [new DropShadowFilter(5, 45, 0x000000, .9)];
-            this.sprite.addChild(messageSprite);
+            messageLabel.filters = this.filters;
+            this.sprite.addChild(messageLabel);
 
             this.width = 400;
             this.height = 100;
@@ -169,7 +168,7 @@ package com.adobe.air.notification
 	            this.bitmap.x = posX;
 	            this.bitmap.y = posY;
 	            this.bitmap.addEventListener(MouseEvent.CLICK, notificationClick);
-	            this.bitmap.filters = [new DropShadowFilter(5, 45, 0x000000, .9)];
+	            this.bitmap.filters = this.filters;
 	            this.sprite.addChild(bitmap);
 			}
 		}
