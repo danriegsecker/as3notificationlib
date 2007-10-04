@@ -108,7 +108,7 @@ package com.adobe.air.notification
             this.titleLabel.contextMenu = cm;
             this.titleLabel.x = leftPos;
             this.titleLabel.y = 2;
-            titleLabel.filters = this.filters;
+            this.titleLabel.filters = this.filters;
             this.sprite.addChild(titleLabel);
 
 			// message            
@@ -126,7 +126,7 @@ package com.adobe.air.notification
             this.messageLabel.contextMenu = cm;
             this.messageLabel.x = leftPos;
             this.messageLabel.y = 19;
-            messageLabel.filters = this.filters;
+            this.messageLabel.filters = this.filters;
             this.sprite.addChild(messageLabel);
 
             this.width = 400;
