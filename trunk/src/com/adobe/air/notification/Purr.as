@@ -67,17 +67,6 @@ package com.adobe.air.notification
 
 		public function addNotificationByParams(title:String, message:String, position:String = null, duration:uint = 5, bitmap:Bitmap = null):Notification
 		{
-        	if (position == null)
-        	{
-	            if (Shell.supportsDockIcon)
-	            {
-	            	position = Notification.TOP_RIGHT;
-	            }
-	            else if (Shell.supportsSystemTrayIcon)
-	            {
-	            	position = Notification.BOTTOM_RIGHT;
-	            }
-        	}
 			var n:Notification = new Notification(title, message, position, duration, bitmap);
 			addNotification(n);
             return n;
