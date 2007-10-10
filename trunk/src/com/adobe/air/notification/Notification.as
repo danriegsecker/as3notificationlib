@@ -142,14 +142,10 @@ package com.adobe.air.notification
             this.messageLabel.filters = this.filters;
             this.sprite.addChild(messageLabel);
 
+			this.stage.addChild(sprite);
+
             this.width = 400;
             this.height = 100;
-
-            this.sprite.graphics.beginFill(0x333333);
-            this.sprite.graphics.drawRoundRect(0, 0, 400, 100, 10, 10);
-            this.sprite.graphics.endFill();
-
-			this.stage.addChild(sprite);
 
 			this.sprite.addEventListener(MouseEvent.CLICK, notificationClick);
         	this.messageLabel.addEventListener(MouseEvent.CLICK, notificationClick);
@@ -309,17 +305,27 @@ package com.adobe.air.notification
             return this._duration;
         }
 
+		private function drawBackGround(): void
+		{
+			this.sprite.graphics.clear();
+            this.sprite.graphics.beginFill(0x333333);
+            this.sprite.graphics.drawRoundRect(0, 0, this.width, this.height, 10, 10);
+            this.sprite.graphics.endFill();
+		}
+
         public override function set width(width:Number):void
         {
 			super.width = width;
 			this.messageLabel.width = width - (this.messageLabel.x + 2);
 			this.titleLabel.width = width - 8;
+			this.drawBackGround()
         }
 
         public override function set height(height:Number):void
         {
 			super.height = height;
 			this.messageLabel.height = height - (this.messageLabel.y + 2);
+			this.drawBackGround()
         }
                 
         public function get id():String
