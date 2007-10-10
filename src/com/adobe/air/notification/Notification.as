@@ -19,6 +19,7 @@ package com.adobe.air.notification
     import flash.text.TextFormatAlign;
     import flash.ui.ContextMenu;
     import flash.utils.Timer;
+    import flash.system.Shell;
 
 	[Event(name="notificationClickedEvent", type="com.adobe.air.notification.NotificationClickedEvent")]
 	
@@ -47,7 +48,7 @@ package com.adobe.air.notification
        	private var alphaTimer:Timer;
        	private var filters:Array;
 
-        public function Notification(title:String, message:String, position:String, duration:uint, bitmap: Bitmap = null)
+        public function Notification(title:String, message:String, position:String = null, duration:uint = 5, bitmap: Bitmap = null)
         {
             var initOpts:NativeWindowInitOptions = new NativeWindowInitOptions();
             initOpts.appearsInWindowMenu = false;
@@ -71,6 +72,18 @@ package com.adobe.air.notification
 			this.filters = [new DropShadowFilter(5, 45, 0x000000, .9)];
 
 			createControls();
+
+        	if (position == null)
+        	{
+	            if (Shell.supportsDockIcon)
+	            {
+	            	position = Notification.TOP_RIGHT;
+	            }
+	            else if (Shell.supportsSystemTrayIcon)
+	            {
+	            	position = Notification.BOTTOM_RIGHT;
+	            }
+        	}
 
         	this.title = title;
         	this.message = message;
