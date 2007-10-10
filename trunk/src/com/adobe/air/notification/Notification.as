@@ -71,7 +71,7 @@ package com.adobe.air.notification
 
 			this.filters = [new DropShadowFilter(5, 45, 0x000000, .9)];
 
-			createControls();
+			this.createControls();
 
         	if (position == null)
         	{
@@ -140,16 +140,16 @@ package com.adobe.air.notification
             this.messageLabel.x = leftPos;
             this.messageLabel.y = 19;
             this.messageLabel.filters = this.filters;
-            this.sprite.addChild(messageLabel);
+            this.sprite.addChild(this.messageLabel);
 
-			this.stage.addChild(sprite);
+			this.stage.addChild(this.sprite);
 
             this.width = 400;
             this.height = 100;
 
-			this.sprite.addEventListener(MouseEvent.CLICK, notificationClick);
-        	this.messageLabel.addEventListener(MouseEvent.CLICK, notificationClick);
-       		this.titleLabel.addEventListener(MouseEvent.CLICK, notificationClick);
+			this.sprite.addEventListener(MouseEvent.CLICK, this.notificationClick);
+        	this.messageLabel.addEventListener(MouseEvent.CLICK, this.notificationClick);
+       		this.titleLabel.addEventListener(MouseEvent.CLICK, this.notificationClick);
 
 			if (this.bitmap != null)
 			{
@@ -178,7 +178,7 @@ package com.adobe.air.notification
 	            this.bitmap.y = posY;
 	            this.bitmap.addEventListener(MouseEvent.CLICK, notificationClick);
 	            this.bitmap.filters = this.filters;
-	            this.sprite.addChild(bitmap);
+	            this.sprite.addChild(this.bitmap);
 			}
 		}
 
@@ -201,8 +201,8 @@ package com.adobe.air.notification
 				this.alphaTimer = null;
 			}
 
-			alphaTimer = new Timer(25);
-			alphaTimer.addEventListener(TimerEvent.TIMER,
+			this.alphaTimer = new Timer(25);
+			this.alphaTimer.addEventListener(TimerEvent.TIMER,
 				function (e:TimerEvent):void
 				{
 					alphaTimer.stop();
@@ -218,7 +218,7 @@ package com.adobe.air.notification
 						alphaTimer.start();
 					}
 				});
-			alphaTimer.start();
+			this.alphaTimer.start();
 		}
 
 		override public function set visible(value:Boolean):void
@@ -226,8 +226,8 @@ package com.adobe.air.notification
 			super.visible = value;
 			if (value == true)
 			{
-				alphaTimer = new Timer(10);
-				alphaTimer.addEventListener(TimerEvent.TIMER,
+				this.alphaTimer = new Timer(10);
+				this.alphaTimer.addEventListener(TimerEvent.TIMER,
 					function (e:TimerEvent):void
 					{
 						alphaTimer.stop();
@@ -249,7 +249,7 @@ package com.adobe.air.notification
 				            closeTimer.start();
 						}
 					});
-				alphaTimer.start();
+				this.alphaTimer.start();
 			}
 		}
 
