@@ -21,7 +21,7 @@ package com.adobe.air.notification
     import flash.utils.Timer;
     import flash.system.Shell;
 
-	[Event(name="notificationClickedEvent", type="com.adobe.air.notification.NotificationClickedEvent")]
+	[Event(name=NotificationClickedEvent.NOTIFICATION_CLICKED_EVENT, type="com.adobe.air.notification.NotificationClickedEvent")]
 	
     public class Notification
         extends NativeWindow
@@ -50,18 +50,9 @@ package com.adobe.air.notification
 
         public function Notification(title:String, message:String, position:String = null, duration:uint = 5, bitmap: Bitmap = null)
         {
-            var initOpts:NativeWindowInitOptions = new NativeWindowInitOptions();
-            initOpts.appearsInWindowMenu = false;
-            initOpts.hasMenu = false;
-            initOpts.maximizable = false;
-            initOpts.minimizable = false;
-            initOpts.resizable = false;
-            initOpts.transparent = true;
-            initOpts.systemChrome = NativeWindowSystemChrome.NONE;
-            initOpts.type = NativeWindowType.LIGHTWEIGHT;
-            super(initOpts);
+            super(this.getWinOptions());
 
-            visible = false;
+            this.visible = false;
 
 			if (bitmap != null)
 			{
@@ -89,8 +80,25 @@ package com.adobe.air.notification
         	this.message = message;
         	this.position = position;
             this.duration = duration;
+
+            this.width = 400;
+            this.height = 100;
 	    }
 		
+		protected function getWinOptions(): NativeWindowInitOptions
+		{
+            var result: NativeWindowInitOptions = new NativeWindowInitOptions();
+            result.appearsInWindowMenu = false;
+            result.hasMenu = false;
+            result.maximizable = false;
+            result.minimizable = false;
+            result.resizable = false;
+            result.transparent = true;
+            result.systemChrome = NativeWindowSystemChrome.NONE;
+            result.type = NativeWindowType.LIGHTWEIGHT;
+            return result;
+		}
+
 		private const Left_Pos: int = 56;
 
 		protected function createControls():void
@@ -126,7 +134,7 @@ package com.adobe.air.notification
 
 			// message            
             this.messageLabel = new TextField();
-            this.messageLabel.autoSize = TextFieldAutoSize.LEFT;
+           this.messageLabel.autoSize = TextFieldAutoSize.NONE;
             var messageFormat:TextFormat = messageLabel.defaultTextFormat;
             messageFormat.font = "Verdana";
             messageFormat.color = 0xFFFFFF;
@@ -143,9 +151,6 @@ package com.adobe.air.notification
             this.sprite.addChild(this.messageLabel);
 
 			this.stage.addChild(this.sprite);
-
-            this.width = 400;
-            this.height = 100;
 
 			this.sprite.addEventListener(MouseEvent.CLICK, this.notificationClick);
         	this.messageLabel.addEventListener(MouseEvent.CLICK, this.notificationClick);
@@ -316,16 +321,16 @@ package com.adobe.air.notification
         public override function set width(width:Number):void
         {
 			super.width = width;
-			this.messageLabel.width = width - (this.messageLabel.x + 2);
-			this.titleLabel.width = width - 8;
 			this.drawBackGround()
+			this.messageLabel.width = width - (this.messageLabel.x + 4);
+			this.titleLabel.width = width - 8;
         }
 
         public override function set height(height:Number):void
         {
 			super.height = height;
-			this.messageLabel.height = height - (this.messageLabel.y + 2);
 			this.drawBackGround()
+			this.messageLabel.height = height - (this.messageLabel.y + 4);
         }
                 
         public function get id():String
