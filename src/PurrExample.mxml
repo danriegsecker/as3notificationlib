@@ -4,6 +4,7 @@
 		<![CDATA[
 			import com.adobe.air.notification.NotificationClickedEvent;
 			import com.adobe.air.notification.Purr;
+			import com.adobe.air.notification.AbstractNotification;
 			import com.adobe.air.notification.Notification;
 
 			private const iconURL: String = "AIR_logo.png";
@@ -49,10 +50,11 @@
 			{
 				var title:String = "This is a title";
 				var message:String = "This is a message #" + (++count);
+				var msg: String = message;
 				var icon:Bitmap = (showIcon.selected) ? bmp : null;
 				if (noEvents.selected)
 				{
-					purr.addNotificationByParams(title, message, where, 5, icon);
+					purr.addTextNotificationByParams(title, message, where, 5, icon);
 				}
 				else
 				{
@@ -61,7 +63,7 @@
 					n.addEventListener(NotificationClickedEvent.NOTIFICATION_CLICKED_EVENT,
 						function(e:NotificationClickedEvent):void
 						{
-							trace("You clicked on notification: " + Notification(e.target).id);
+							trace("You clicked on notification: " + AbstractNotification(e.target).id);
 						});
 					purr.addNotification(n);
 				}
@@ -88,10 +90,10 @@
 
 		]]>
 	</mx:Script>
-	<mx:Button click="addNotification(Notification.TOP_LEFT)" label="Top Left" top="2" left="2"/>
-	<mx:Button click="addNotification(Notification.TOP_RIGHT)" label="Top Right" top="2" right="2"/>
-	<mx:Button click="addNotification(Notification.BOTTOM_RIGHT)" label="Bottom Right" right="2" bottom="2"/>
-	<mx:Button click="addNotification(Notification.BOTTOM_LEFT)" label="Bottom Left" left="2" bottom="2"/>
+	<mx:Button click="addNotification(AbstractNotification.TOP_LEFT)" label="Top Left" top="2" left="2"/>
+	<mx:Button click="addNotification(AbstractNotification.TOP_RIGHT)" label="Top Right" top="2" right="2"/>
+	<mx:Button click="addNotification(AbstractNotification.BOTTOM_RIGHT)" label="Bottom Right" right="2" bottom="2"/>
+	<mx:Button click="addNotification(AbstractNotification.BOTTOM_LEFT)" label="Bottom Left" left="2" bottom="2"/>
 	<mx:Box width="100%" height="100%" verticalAlign="middle" horizontalAlign="center">
 		<mx:VBox>
 			<mx:HBox>

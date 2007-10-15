@@ -18,7 +18,7 @@ package com.adobe.air.notification
             paused = false;
         }
 		
-		public function addNotification(notification:Notification):void
+		public function addNotification(notification:AbstractNotification):void
 		{
             queue.push(notification);
             if (queue.length == 1 && !playing)
@@ -47,7 +47,7 @@ package com.adobe.air.notification
         private function run():void
         {
         	if (paused || queue.length == 0) return;
-            var n:Notification = queue[0] as Notification;
+            var n:AbstractNotification = queue[0] as AbstractNotification;
             n.addEventListener(Event.CLOSE,
             	function(e:Event):void
             	{
@@ -65,16 +65,16 @@ package com.adobe.air.notification
             var screen:Screen = Screen.mainScreen;
 			switch (n.position)
             {
-                case Notification.TOP_LEFT:
+                case AbstractNotification.TOP_LEFT:
                     n.bounds = new Rectangle(screen.visibleBounds.x + 2, screen.visibleBounds.y + 3, n.width, n.height);
                     break;
-                case Notification.TOP_RIGHT:
+                case AbstractNotification.TOP_RIGHT:
                     n.bounds = new Rectangle(screen.visibleBounds.width - (n.width + 2), screen.visibleBounds.y + 3, n.width, n.height);
                     break;
-                case Notification.BOTTOM_LEFT:
+                case AbstractNotification.BOTTOM_LEFT:
                     n.bounds = new Rectangle(screen.visibleBounds.x + 2, screen.visibleBounds.height - (n.height + 2), n.width, n.height);
                     break;
-                case Notification.BOTTOM_RIGHT:
+                case AbstractNotification.BOTTOM_RIGHT:
                     n.bounds = new Rectangle(screen.visibleBounds.width - (n.width + 2) , screen.visibleBounds.height - (n.height + 2), n.width, n.height);
                     break;
             }
