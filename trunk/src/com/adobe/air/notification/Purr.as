@@ -8,7 +8,7 @@ package com.adobe.air.notification
 	import flash.display.Bitmap;
 	import flash.events.Event;
 	import flash.system.Shell;
-	
+
 	public class Purr
 	{
 		private var topLeftQ:NotificationQueue;
@@ -46,26 +46,26 @@ package com.adobe.air.notification
 			}
 		}
 
-		public function addNotification(n:Notification):void
+		public function addNotification(n:AbstractNotification):void
 		{
 			switch (n.position)
             {
-                case Notification.TOP_LEFT:
+                case AbstractNotification.TOP_LEFT:
                     topLeftQ.addNotification(n);
                     break;
-                case Notification.TOP_RIGHT:
+                case AbstractNotification.TOP_RIGHT:
                     topRightQ.addNotification(n);
                     break;
-                case Notification.BOTTOM_LEFT:
+                case AbstractNotification.BOTTOM_LEFT:
                     bottomLeftQ.addNotification(n);
                     break;
-                case Notification.BOTTOM_RIGHT:
+                case AbstractNotification.BOTTOM_RIGHT:
                     bottomRightQ.addNotification(n);
                     break;
             }			
 		}
 
-		public function addNotificationByParams(title:String, message:String, position:String = null, duration:uint = 5, bitmap:Bitmap = null):Notification
+		public function addTextNotificationByParams(title:String, message:String, position:String = null, duration:uint = 5, bitmap:Bitmap = null):Notification
 		{
 			var n:Notification = new Notification(title, message, position, duration, bitmap);
 			addNotification(n);

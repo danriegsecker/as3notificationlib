@@ -2,58 +2,26 @@ package com.adobe.air.notification
 {           
     import flash.display.Bitmap;
     import flash.display.BitmapData;
-    import flash.display.NativeWindow;
-    import flash.display.NativeWindowInitOptions;
-    import flash.display.NativeWindowSystemChrome;
-    import flash.display.NativeWindowType;
-    import flash.display.Sprite;
-    import flash.display.StageAlign;
-    import flash.display.StageScaleMode;
-    import flash.events.MouseEvent;
-    import flash.events.TimerEvent;
     import flash.filters.DropShadowFilter;
-    import flash.geom.Rectangle;
     import flash.text.TextField;
     import flash.text.TextFieldAutoSize;
     import flash.text.TextFormat;
     import flash.text.TextFormatAlign;
     import flash.ui.ContextMenu;
-    import flash.utils.Timer;
-    import flash.system.Shell;
-
-	[Event(name=NotificationClickedEvent.NOTIFICATION_CLICKED_EVENT, type="com.adobe.air.notification.NotificationClickedEvent")]
 	
     public class Notification
-        extends NativeWindow
-    {
-
-        public static const TOP_LEFT:String = "topLeft";
-        public static const TOP_RIGHT:String = "topRight";
-        public static const BOTTOM_LEFT:String = "bottomLeft";
-        public static const BOTTOM_RIGHT:String = "bottomRight";
-        
-        private var _id:String;
-        private var _duration:uint;
+        extends AbstractNotification
+    {        
         private var _message:String;
-        private var _position:String;
         private var _title:String;
-        private var _height:String;
-        private var _width:String;
        	private var _bitmap: Bitmap;
 
-		private var sprite:Sprite;
         private var messageLabel:TextField;
        	private var titleLabel:TextField;
-       	private var closeTimer:Timer;
-       	private var alphaTimer:Timer;
        	private var filters:Array;
 
         public function Notification(title:String, message:String, position:String = null, duration:uint = 5, bitmap: Bitmap = null)
         {
-            super(this.getWinOptions());
-
-            this.visible = false;
-
 			if (bitmap != null)
 			{
     	    	this.bitmap = new Bitmap(bitmap.bitmapData);
@@ -62,57 +30,24 @@ package com.adobe.air.notification
 
 			this.filters = [new DropShadowFilter(5, 45, 0x000000, .9)];
 
-			this.createControls();
-
-        	if (position == null)
-        	{
-	            if (Shell.supportsDockIcon)
-	            {
-	            	position = Notification.TOP_RIGHT;
-	            }
-	            else if (Shell.supportsSystemTrayIcon)
-	            {
-	            	position = Notification.BOTTOM_RIGHT;
-	            }
-        	}
+            super(position, duration);
 
         	this.title = title;
         	this.message = message;
-        	this.position = position;
-            this.duration = duration;
 
             this.width = 400;
             this.height = 100;
 	    }
-		
-		protected function getWinOptions(): NativeWindowInitOptions
-		{
-            var result: NativeWindowInitOptions = new NativeWindowInitOptions();
-            result.appearsInWindowMenu = false;
-            result.hasMenu = false;
-            result.maximizable = false;
-            result.minimizable = false;
-            result.resizable = false;
-            result.transparent = true;
-            result.systemChrome = NativeWindowSystemChrome.NONE;
-            result.type = NativeWindowType.LIGHTWEIGHT;
-            return result;
-		}
 
 		private const Left_Pos: int = 56;
 
-		protected function createControls():void
+		override protected function createControls():void
 		{
+			super.createControls();
 			var leftPos: int = (this.bitmap != null) ? 56 : 2;
 			var cm:ContextMenu = new ContextMenu();
 			cm.hideBuiltInItems();
 			
-			this.bounds = new Rectangle(100, 100, 800, 600);
-			this.stage.align = StageAlign.TOP_LEFT;
-			this.stage.scaleMode = StageScaleMode.NO_SCALE;
-			this.sprite = new Sprite();
-			this.sprite.alpha = 0;
-
 			// title
             this.titleLabel = new TextField();
             this.titleLabel.autoSize = TextFieldAutoSize.LEFT;
@@ -130,7 +65,7 @@ package com.adobe.air.notification
             this.titleLabel.x = leftPos;
             this.titleLabel.y = 2;
             this.titleLabel.filters = this.filters;
-            this.sprite.addChild(titleLabel);
+            this.getSprite().addChild(titleLabel);
 
 			// message            
             this.messageLabel = new TextField();
@@ -148,13 +83,7 @@ package com.adobe.air.notification
             this.messageLabel.x = leftPos;
             this.messageLabel.y = 19;
             this.messageLabel.filters = this.filters;
-            this.sprite.addChild(this.messageLabel);
-
-			this.stage.addChild(this.sprite);
-
-			this.sprite.addEventListener(MouseEvent.CLICK, this.notificationClick);
-        	this.messageLabel.addEventListener(MouseEvent.CLICK, this.notificationClick);
-       		this.titleLabel.addEventListener(MouseEvent.CLICK, this.notificationClick);
+            this.getSprite().addChild(this.messageLabel);
 
 			if (this.bitmap != null)
 			{
@@ -181,80 +110,8 @@ package com.adobe.air.notification
 	            this.bitmap.scaleY = scaleY;
 	            this.bitmap.x = posX;
 	            this.bitmap.y = posY;
-	            this.bitmap.addEventListener(MouseEvent.CLICK, notificationClick);
 	            this.bitmap.filters = this.filters;
-	            this.sprite.addChild(this.bitmap);
-			}
-		}
-
-		private function superClose():void
-		{
-			super.close();
-		}
-
-		override public function close():void
-		{
-	        if (this.closeTimer != null)
-	        {
-	            this.closeTimer.stop();
-	            this.closeTimer = null;
-	        }
-
-			if (this.alphaTimer != null)
-			{
-				this.alphaTimer.stop();
-				this.alphaTimer = null;
-			}
-
-			this.alphaTimer = new Timer(25);
-			this.alphaTimer.addEventListener(TimerEvent.TIMER,
-				function (e:TimerEvent):void
-				{
-					alphaTimer.stop();
-					var nAlpha:Number = sprite.alpha;
-					nAlpha = nAlpha - .01;
-					sprite.alpha = nAlpha;
-					if (sprite.alpha <= 0)
-					{
-						superClose();
-					}
-					else 
-					{
-						alphaTimer.start();
-					}
-				});
-			this.alphaTimer.start();
-		}
-
-		override public function set visible(value:Boolean):void
-		{
-			super.visible = value;
-			if (value == true)
-			{
-				this.alphaTimer = new Timer(10);
-				this.alphaTimer.addEventListener(TimerEvent.TIMER,
-					function (e:TimerEvent):void
-					{
-						alphaTimer.stop();
-						var nAlpha:Number = sprite.alpha;
-						nAlpha = nAlpha + .01;
-						sprite.alpha = nAlpha;
-						if (sprite.alpha < .9)
-						{
-							alphaTimer.start();
-						}
-						else
-						{
-							closeTimer = new Timer(duration * 1000);
-				            closeTimer.addEventListener(TimerEvent.TIMER,
-				            	function(e:TimerEvent):void
-				            	{
-						            close();
-				            	}); 
-				            closeTimer.start();
-						}
-					});
-				this.alphaTimer.start();
+	            this.getSprite().addChild(this.bitmap);
 			}
 		}
 
@@ -267,16 +124,6 @@ package com.adobe.air.notification
 		{
 			return this._bitmap;
 		}
-
-        public function set position(position:String):void
-        {
-        	this._position = position;
-        }
-                    
-        public function get position():String
-        {
-            return this._position;
-        }
 
         public override function set title(title:String):void
         {
@@ -300,28 +147,9 @@ package com.adobe.air.notification
             return this._message;
         }
 
-        public function set duration(duration:uint):void
-        {
-           this._duration = duration;
-        }
-
-        public function get duration():uint
-        {
-            return this._duration;
-        }
-
-		private function drawBackGround(): void
-		{
-			this.sprite.graphics.clear();
-            this.sprite.graphics.beginFill(0x333333);
-            this.sprite.graphics.drawRoundRect(0, 0, this.width, this.height, 10, 10);
-            this.sprite.graphics.endFill();
-		}
-
         public override function set width(width:Number):void
         {
 			super.width = width;
-			this.drawBackGround()
 			this.messageLabel.width = width - (this.messageLabel.x + 4);
 			this.titleLabel.width = width - 8;
         }
@@ -329,24 +157,8 @@ package com.adobe.air.notification
         public override function set height(height:Number):void
         {
 			super.height = height;
-			this.drawBackGround()
 			this.messageLabel.height = height - (this.messageLabel.y + 4);
         }
                 
-        public function get id():String
-        {
-        	return this._id;
-        }
-
-        public function set id(id:String):void
-        {
-        	this._id = id;
-        }
-
-		private function notificationClick(event:MouseEvent):void
-		{
-			this.dispatchEvent(new NotificationClickedEvent());
-			this.close();
-		}
     }
 }
