@@ -1,11 +1,11 @@
 package com.adobe.air.notification
 {
+	import flash.display.Bitmap;
 	import flash.display.DockIcon;
 	import flash.display.InteractiveIcon;
 	import flash.display.NativeMenu;
 	import flash.display.NativeWindow;
 	import flash.display.SystemTrayIcon;
-	import flash.display.Bitmap;
 	import flash.events.Event;
 	import flash.system.Shell;
 
@@ -127,12 +127,19 @@ package com.adobe.air.notification
 			return null;
 		}
 
-		public function clear(): void
+		public function clear(where: String = null): void
 		{
-			this.topLeftQ.clear();
-			this.topRightQ.clear();
-			this.bottomLeftQ.clear();
-			this.bottomRightQ.clear();
+			switch (where)
+			{
+                case AbstractNotification.TOP_LEFT || null:
+					this.topLeftQ.clear();
+                case AbstractNotification.TOP_RIGHT || null:
+					this.topRightQ.clear();
+                case AbstractNotification.BOTTOM_LEFT || null:
+					this.bottomLeftQ.clear();
+                case AbstractNotification.BOTTOM_RIGHT || null:
+					this.bottomRightQ.clear();
+			}
 		}
 
 		public function pause():void
