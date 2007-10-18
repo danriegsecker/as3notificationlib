@@ -127,6 +127,14 @@ package com.adobe.air.notification
 			return null;
 		}
 
+		public function clear(): void
+		{
+			this.topLeftQ.clear();
+			this.topRightQ.clear();
+			this.bottomLeftQ.clear();
+			this.bottomRightQ.clear();
+		}
+
 		public function pause():void
 		{
 			this.topLeftQ.pause();
