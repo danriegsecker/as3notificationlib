@@ -15,7 +15,7 @@
 			private var timer:Timer;
 			private var purr:Purr = new Purr(1);
 
-			private function onCreationComplete():void
+			private function onCreationComplete(): void
 			{
 
 	            var loader: Loader = new Loader();
@@ -33,7 +33,7 @@
 					});
 			}
 
-	        private function completeHandler(event:Event):void
+	        private function completeHandler(event: Event): void
 	        {
 	        	bmp = Bitmap(Loader(event.target.loader).content);
 				purr.setIcons([bmp.bitmapData], "This is tooltip");
@@ -43,12 +43,12 @@
 				purr.setMenu(m);
 	        }
 
-	        private function ioErrorHandler(event:IOErrorEvent):void
+	        private function ioErrorHandler(event: IOErrorEvent): void
 	        {
 	            trace("Unable to load image: " + iconURL);
 	        }
 
-			private function addNotification(where:String):void
+			private function addNotification(where: String): void
 			{
 				var title:String = "This is a title";
 				if (!notifyVideo.selected)
@@ -89,12 +89,12 @@
 				}
 			}
 
-			private function alert():void
+			private function alert(): void
 			{
 				timer.start();
 			}
 
-			private function pause():void
+			private function pause(): void
 			{
 				pauseButton.enabled = false;
 				resumeButton.enabled = true;
@@ -122,7 +122,7 @@
 				}
 			}
 
-			private function fileSelected(event:Event):void 
+			private function fileSelected(event: Event): void 
 			{
 				videoFile.text = File(event.target).url;
 			}
