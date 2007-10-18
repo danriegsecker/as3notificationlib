@@ -28,6 +28,15 @@ package com.adobe.air.notification
             }
 		}
 
+		public function clear(): void
+		{
+			while (queue.length > 0)
+			{
+				var n: AbstractNotification = queue.shift() as AbstractNotification;
+				n = null;
+			}
+		}
+
         public function get length():uint
         {
         	return queue.length;
