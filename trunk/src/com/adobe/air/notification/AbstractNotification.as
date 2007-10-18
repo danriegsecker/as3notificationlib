@@ -88,12 +88,19 @@ package com.adobe.air.notification
 			this.stage.scaleMode = StageScaleMode.NO_SCALE;
 		}
 
+		protected function beforeClose(): void
+		{
+			// do custom process.
+			// see videoNotificaton class for more specific usecase.		
+		}
+
 		private function superClose():void
 		{
+			this.beforeClose();
 			super.close();
 		}
 
-		override public function close():void
+		override public function close(): void
 		{
 	        if (this.closeTimer != null)
 	        {

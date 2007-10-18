@@ -24,8 +24,7 @@ package com.adobe.air.notification
         {
 			if (bitmap != null)
 			{
-    	    	this.bitmap = new Bitmap(bitmap.bitmapData);
-    	    	this.bitmap.smoothing = true;
+    	    	this.bitmap = bitmap;
    			}
 
 			this.filters = [new DropShadowFilter(5, 45, 0x000000, .9)];
@@ -65,7 +64,7 @@ package com.adobe.air.notification
             this.titleLabel.x = leftPos;
             this.titleLabel.y = 2;
             this.titleLabel.filters = this.filters;
-            this.getSprite().addChild(titleLabel);
+            this.getSprite().addChild(this.titleLabel);
 
 			// message            
             this.messageLabel = new TextField();
@@ -117,7 +116,8 @@ package com.adobe.air.notification
 
 		public function set bitmap(bitmap:Bitmap):void
 		{
-			this._bitmap = bitmap;
+			this._bitmap = new Bitmap(bitmap.bitmapData);
+	    	this._bitmap.smoothing = true;
 		}
 		
 		public function get bitmap():Bitmap
