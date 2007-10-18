@@ -2,10 +2,12 @@
 <mx:WindowedApplication xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="onCreationComplete()" layout="absolute">
 	<mx:Script>
 		<![CDATA[
+			import com.adobe.air.notification.VideoNotification;
 			import com.adobe.air.notification.NotificationClickedEvent;
 			import com.adobe.air.notification.Purr;
 			import com.adobe.air.notification.AbstractNotification;
 			import com.adobe.air.notification.Notification;
+			import mx.utils.StringUtil;
 
 			private const iconURL: String = "AIR_logo.png";
 			private var bmp: Bitmap = null;
@@ -49,23 +51,41 @@
 			private function addNotification(where:String):void
 			{
 				var title:String = "This is a title";
-				var message:String = "This is a message #" + (++count);
-				var msg: String = message;
-				var icon:Bitmap = (showIcon.selected) ? bmp : null;
-				if (noEvents.selected)
+				if (!notifyVideo.selected)
 				{
-					purr.addTextNotificationByParams(title, message, where, 5, icon);
+					var message:String = "This is a message #" + (++count);
+					var msg: String = message;
+					var icon:Bitmap = (notifyIcon.selected) ? bmp : null;
+					if (noEvents.selected)
+					{
+						purr.addTextNotificationByParams(title, message, where, 5, icon);
+					}
+					else
+					{
+						var n:Notification = new Notification(title, message, where, 5, icon);
+						n.id = String(count);
+						n.addEventListener(NotificationClickedEvent.NOTIFICATION_CLICKED_EVENT,
+							function(e:NotificationClickedEvent):void
+							{
+								trace("You clicked on notification: " + AbstractNotification(e.target).id);
+							});
+						purr.addNotification(n);
+					}
 				}
 				else
 				{
-					var n:Notification = new Notification(title, message, where, 5, icon);
-					n.id = String(count);
-					n.addEventListener(NotificationClickedEvent.NOTIFICATION_CLICKED_EVENT,
-						function(e:NotificationClickedEvent):void
-						{
-							trace("You clicked on notification: " + AbstractNotification(e.target).id);
-						});
-					purr.addNotification(n);
+					var n1: VideoNotification = new VideoNotification(title, StringUtil.trim(videoFile.text), where, 5);
+					n1.height = n1.width;
+					if (!noEvents.selected)
+					{
+						n1.id = String(count);
+						n1.addEventListener(NotificationClickedEvent.NOTIFICATION_CLICKED_EVENT,
+							function(e:NotificationClickedEvent):void
+							{
+								trace("You clicked on notification: " + AbstractNotification(e.target).id);
+							});
+					}
+					purr.addNotification(n1);
 				}
 			}
 
@@ -88,6 +108,24 @@
 				this.purr.resume();
 			}
 
+			private function fileOpen(): void
+			{
+				var fileToOpen:File = new File();
+				try
+				{
+				    fileToOpen.browseForOpen("Open", [new FileFilter("Text", "*.flv")]);
+				    fileToOpen.addEventListener(Event.SELECT, fileSelected);
+				}
+				catch (error:Error)
+				{
+				    trace("Failed:", error.message);
+				}
+			}
+
+			private function fileSelected(event:Event):void 
+			{
+				videoFile.text = File(event.target).url;
+			}
 		]]>
 	</mx:Script>
 	<mx:Button click="addNotification(AbstractNotification.TOP_LEFT)" label="Top Left" top="2" left="2"/>
@@ -113,7 +151,21 @@
 		<mx:Grid>
 			<mx:GridRow>
 				<mx:GridItem>
-					<mx:CheckBox id="showIcon" label="Show icon" selected="true"/>
+					<mx:HBox>
+						<mx:RadioButton id="notifyIcon" groupName="notifiationType" label="Show icon" selected="true"/>
+						<mx:RadioButton id="notifyVideo" groupName="notifiationType" label="Show video"/>
+						<mx:RadioButton id="notifyNone" groupName="notifiationType" label="None"/>
+					</mx:HBox>
+				</mx:GridItem>
+			</mx:GridRow>
+			<mx:GridRow>
+				<mx:GridItem>
+					<mx:HBox width="100%">
+						<mx:Label text="Video File" enabled="{notifyVideo.selected}"/>
+						<mx:TextInput id="videoFile" width="200" enabled="{notifyVideo.selected}"/>
+						<mx:Button label="..." width="20" enabled="{notifyVideo.selected}"
+							paddingBottom="0" paddingLeft="0" paddingRight="0" paddingTop="0" click="fileOpen()"/>
+					</mx:HBox>
 				</mx:GridItem>
 			</mx:GridRow>
 			<mx:GridRow>
