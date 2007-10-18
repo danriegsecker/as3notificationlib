@@ -13,33 +13,33 @@ package com.adobe.air.notification
 
         public function NotificationQueue()
         {
-            queue = new Array();
-            playing = false;
-            paused = false;
+            this.queue = new Array();
+            this.playing = false;
+            this.paused = false;
         }
 		
 		public function addNotification(notification:AbstractNotification):void
 		{
-            queue.push(notification);
-            if (queue.length == 1 && !playing)
+            this.queue.push(notification);
+            if (this.queue.length == 1 && !this.playing)
             {
-            	playing = true;
-            	run();
+            	this.playing = true;
+            	this.run();
             }
 		}
 
 		public function clear(): void
 		{
-			while (queue.length > 0)
+			while (this.queue.length > 0)
 			{
-				var n: AbstractNotification = queue.shift() as AbstractNotification;
+				var n: AbstractNotification = this.queue.shift() as AbstractNotification;
 				n = null;
 			}
 		}
 
         public function get length():uint
         {
-        	return queue.length;
+        	return this.queue.length;
         }
 
 		public function pause():void
@@ -50,13 +50,13 @@ package com.adobe.air.notification
 		public function resume():void
 		{
 			this.paused = false;
-			run();
+			this.run();
 		}
         
         private function run():void
         {
-        	if (paused || queue.length == 0) return;
-            var n:AbstractNotification = queue[0] as AbstractNotification;
+        	if (this.paused || this.queue.length == 0) return;
+            var n:AbstractNotification = this.queue[0] as AbstractNotification;
             n.addEventListener(Event.CLOSE,
             	function(e:Event):void
             	{
