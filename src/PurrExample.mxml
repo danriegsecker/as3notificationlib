@@ -113,7 +113,7 @@
 				var fileToOpen:File = new File();
 				try
 				{
-				    fileToOpen.browseForOpen("Open", [new FileFilter("Text", "*.flv")]);
+				    fileToOpen.browseForOpen("Open", [new FileFilter("Flash Videos", "*.flv")]);
 				    fileToOpen.addEventListener(Event.SELECT, fileSelected);
 				}
 				catch (error:Error)
