@@ -19,12 +19,12 @@ package com.adobe.air.notification
 
 		public function Purr(idleThreshold:uint)
 		{
-			topLeftQ = new NotificationQueue();
-			topRightQ = new NotificationQueue();
-			bottomLeftQ = new NotificationQueue();
-			bottomRightQ = new NotificationQueue();
+			this.topLeftQ = new NotificationQueue();
+			this.topRightQ = new NotificationQueue();
+			this.bottomLeftQ = new NotificationQueue();
+			this.bottomRightQ = new NotificationQueue();
 
-			paused = false;
+			this.paused = false;
 
 			Shell.shell.idleThreshold = idleThreshold * 60;
 			Shell.shell.addEventListener(Event.USER_IDLE, function(e:Event):void {pause();});
@@ -51,16 +51,16 @@ package com.adobe.air.notification
 			switch (n.position)
             {
                 case AbstractNotification.TOP_LEFT:
-                    topLeftQ.addNotification(n);
+                    this.topLeftQ.addNotification(n);
                     break;
                 case AbstractNotification.TOP_RIGHT:
-                    topRightQ.addNotification(n);
+                    this.topRightQ.addNotification(n);
                     break;
                 case AbstractNotification.BOTTOM_LEFT:
-                    bottomLeftQ.addNotification(n);
+                    this.bottomLeftQ.addNotification(n);
                     break;
                 case AbstractNotification.BOTTOM_RIGHT:
-                    bottomRightQ.addNotification(n);
+                    this.bottomRightQ.addNotification(n);
                     break;
             }			
 		}
@@ -68,7 +68,7 @@ package com.adobe.air.notification
 		public function addTextNotificationByParams(title:String, message:String, position:String = null, duration:uint = 5, bitmap:Bitmap = null):Notification
 		{
 			var n:Notification = new Notification(title, message, position, duration, bitmap);
-			addNotification(n);
+			this.addNotification(n);
             return n;
 		}
 
