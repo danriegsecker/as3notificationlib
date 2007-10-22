@@ -27,8 +27,8 @@ package com.adobe.air.notification
 			this.paused = false;
 
 			Shell.shell.idleThreshold = idleThreshold * 60;
-			Shell.shell.addEventListener(Event.USER_IDLE, function(e:Event):void {pause();});
-			Shell.shell.addEventListener(Event.USER_PRESENT, function(e:Event):void {resume();});
+			Shell.shell.addEventListener(Event.USER_IDLE, function(e: Event): void { pause(); });
+			Shell.shell.addEventListener(Event.USER_PRESENT, function(e: Event): void { resume(); });
 		}
 
 		public function alert(alertType:String, nativeWindow:NativeWindow):void

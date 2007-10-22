@@ -17,7 +17,6 @@
 
 			private function onCreationComplete(): void
 			{
-
 	            var loader: Loader = new Loader();
 	            loader.contentLoaderInfo.addEventListener(Event.COMPLETE, completeHandler);
 	            loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, ioErrorHandler);

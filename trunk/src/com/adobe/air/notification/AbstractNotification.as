@@ -222,7 +222,7 @@ package com.adobe.air.notification
 			this.close();
 		}
 
-		public function addClickEvent(target: EventDispatcher): void
+		private function addClickEvent(target: EventDispatcher): void
 		{
 			target.addEventListener(MouseEvent.CLICK, this.notificationClick);
 		}
