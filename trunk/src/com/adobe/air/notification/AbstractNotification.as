@@ -7,7 +7,6 @@ package com.adobe.air.notification
 	import flash.display.Sprite;
 	import flash.display.StageAlign;
 	import flash.display.StageScaleMode;
-	import flash.events.EventDispatcher;
 	import flash.events.MouseEvent;
 	import flash.events.TimerEvent;
 	import flash.geom.Rectangle;
@@ -76,7 +75,7 @@ package com.adobe.air.notification
 				this.sprite = new Sprite();
 				this.sprite.alpha = 0;
 				this.stage.addChild(this.sprite);
-				this.addClickEvent(this.sprite);
+				this.sprite.addEventListener(MouseEvent.CLICK, this.notificationClick);
 			}
 			return this.sprite;
 		}
@@ -220,11 +219,6 @@ package com.adobe.air.notification
 		{
 			this.dispatchEvent(new NotificationClickedEvent());
 			this.close();
-		}
-
-		private function addClickEvent(target: EventDispatcher): void
-		{
-			target.addEventListener(MouseEvent.CLICK, this.notificationClick);
 		}
 	}
 }
