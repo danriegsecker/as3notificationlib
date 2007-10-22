@@ -95,8 +95,8 @@ package com.adobe.air.notification
         {
             this.stream = new NetStream(this.connection);
             var client:Object = new Object();
-            client.onMetaData = function(o:Object):void {};
-            stream.client = client;
+            client.onMetaData = function(o: Object): void {};
+            this.stream.client = client;
             this.stream.addEventListener(NetStatusEvent.NET_STATUS, this.netStatusHandler);
             this.stream.addEventListener(AsyncErrorEvent.ASYNC_ERROR, this.asyncErrorHandler);
 	        this.video = new Video();
@@ -138,7 +138,7 @@ package com.adobe.air.notification
         	this.titleLabel.text = title;
         }
 
-        public override function get title():String
+        public override function get title(): String
         {
             return this._title;
         }
