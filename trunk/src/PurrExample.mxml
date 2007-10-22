@@ -74,7 +74,7 @@
 				}
 				else
 				{
-					var n1: VideoNotification = new VideoNotification(title, StringUtil.trim(videoFile.text), where, 5);
+					var n1: VideoNotification = new VideoNotification(title, StringUtil.trim(videoFile.text), where, 20);
 					n1.height = n1.width;
 					if (!noEvents.selected)
 					{
