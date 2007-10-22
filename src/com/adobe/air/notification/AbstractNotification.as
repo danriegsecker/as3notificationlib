@@ -54,7 +54,7 @@ package com.adobe.air.notification
         	this.position = position;
             this.duration = duration;
 		}
-		
+
 		protected function getWinOptions(): NativeWindowInitOptions
 		{
             var result: NativeWindowInitOptions = new NativeWindowInitOptions();
@@ -68,7 +68,7 @@ package com.adobe.air.notification
             result.type = NativeWindowType.LIGHTWEIGHT;
             return result;
 		}
-		
+
 		protected function getSprite(): Sprite
 		{
 			if (this.sprite == null)
@@ -170,7 +170,7 @@ package com.adobe.air.notification
         {
         	this._position = position;
         }
-                    
+
         public function get position():String
         {
             return this._position;
@@ -221,7 +221,7 @@ package com.adobe.air.notification
 			this.dispatchEvent(new NotificationClickedEvent());
 			this.close();
 		}
-		
+
 		public function addClickEvent(target: EventDispatcher): void
 		{
 			target.addEventListener(MouseEvent.CLICK, this.notificationClick);
