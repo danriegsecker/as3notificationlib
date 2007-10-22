@@ -53,12 +53,12 @@ package com.adobe.air.notification
 			this.run();
 		}
         
-        private function run():void
+        private function run(): void
         {
         	if (this.paused || this.queue.length == 0) return;
             var n:AbstractNotification = this.queue[0] as AbstractNotification;
             n.addEventListener(Event.CLOSE,
-            	function(e:Event):void
+            	function(e: Event): void
             	{
             		queue.shift();
             		if (queue.length > 0)
@@ -68,7 +68,6 @@ package com.adobe.air.notification
             		else
             		{
             			playing = false;
-            			return;
             		}
             	});
             var screen:Screen = Screen.mainScreen;
