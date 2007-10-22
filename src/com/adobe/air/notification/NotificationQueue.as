@@ -35,12 +35,9 @@ package com.adobe.air.notification
 				var n: AbstractNotification = this.queue.shift() as AbstractNotification;
 				n = null;
 			}
+			if (this.playing)
+				this.playing = false;
 		}
-
-        public function get length():uint
-        {
-        	return this.queue.length;
-        }
 
 		public function pause():void
 		{
