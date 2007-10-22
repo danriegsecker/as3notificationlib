@@ -1,17 +1,17 @@
 package com.adobe.air.notification
 {
+	import flash.events.AsyncErrorEvent;
 	import flash.events.NetStatusEvent;
 	import flash.events.SecurityErrorEvent;
-	import flash.events.AsyncErrorEvent;
 	import flash.filters.DropShadowFilter;
 	import flash.media.Video;
-	import flash.net.NetStream;
 	import flash.net.NetConnection;
+	import flash.net.NetStream;
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormat;
 	import flash.text.TextFormatAlign;
-    import flash.ui.ContextMenu;
+	import flash.ui.ContextMenu;
 
 	public class VideoNotification extends AbstractNotification
 	{
@@ -94,6 +94,9 @@ package com.adobe.air.notification
         private function connectStream(): void
         {
             this.stream = new NetStream(this.connection);
+            var client:Object = new Object();
+            client.onMetaData = function(o:Object):void {};
+            stream.client = client;
             this.stream.addEventListener(NetStatusEvent.NET_STATUS, this.netStatusHandler);
             this.stream.addEventListener(AsyncErrorEvent.ASYNC_ERROR, this.asyncErrorHandler);
 	        this.video = new Video();
