@@ -13,7 +13,7 @@ package com.adobe.air.notification
         private var playing:Boolean;
         private var paused:Boolean;
         public var sound: Sound = null;
-        public var channel: SoundChannel = null;
+        private var channel: SoundChannel = null;
 
         public function NotificationQueue()
         {
