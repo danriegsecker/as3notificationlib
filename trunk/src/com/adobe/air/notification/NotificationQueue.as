@@ -3,6 +3,8 @@ package com.adobe.air.notification
     import flash.display.Screen;
     import flash.events.Event;
     import flash.geom.Rectangle;
+    import flash.media.Sound;
+    import flash.media.SoundChannel;
     
     public class NotificationQueue
     {
@@ -10,6 +12,8 @@ package com.adobe.air.notification
         private var queue:Array;
         private var playing:Boolean;
         private var paused:Boolean;
+        public var sound: Sound = null;
+        public var channel: SoundChannel = null;
 
         public function NotificationQueue()
         {
@@ -57,6 +61,10 @@ package com.adobe.air.notification
             n.addEventListener(Event.CLOSE,
             	function(e: Event): void
             	{
+            		if (sound != null)
+            		{
+						channel.stop();            		
+            		}
             		queue.shift();
             		if (queue.length > 0)
             		{
@@ -85,6 +93,10 @@ package com.adobe.air.notification
             }
 			n.alwaysInFront = true;
 			n.visible = true;
+			if (this.sound != null)
+			{
+				this.channel = this.sound.play(0);
+			}
         }
     }
 }

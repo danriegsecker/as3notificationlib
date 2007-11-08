@@ -50,7 +50,7 @@ package com.adobe.air.notification
 			// title
             this.titleLabel = new TextField();
             this.titleLabel.autoSize = TextFieldAutoSize.LEFT;
-            var titleFormat:TextFormat = titleLabel.defaultTextFormat;
+            var titleFormat:TextFormat = this.titleLabel.defaultTextFormat;
             titleFormat.font = "Verdana";
             titleFormat.bold = true;
             titleFormat.color = 0xFFFFFF;
@@ -69,7 +69,7 @@ package com.adobe.air.notification
 			// message            
             this.messageLabel = new TextField();
            this.messageLabel.autoSize = TextFieldAutoSize.NONE;
-            var messageFormat:TextFormat = messageLabel.defaultTextFormat;
+            var messageFormat:TextFormat = this.messageLabel.defaultTextFormat;
             messageFormat.font = "Verdana";
             messageFormat.color = 0xFFFFFF;
             messageFormat.size = 10;
