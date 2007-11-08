@@ -63,7 +63,7 @@ package com.adobe.air.notification
             	{
             		if (sound != null)
             		{
-						channel.stop();            		
+						channel.stop();         		
             		}
             		queue.shift();
             		if (queue.length > 0)
@@ -95,7 +95,7 @@ package com.adobe.air.notification
 			n.visible = true;
 			if (this.sound != null)
 			{
-				this.channel = this.sound.play(0);
+				this.channel = this.sound.play();
 			}
         }
     }
