@@ -145,14 +145,26 @@
 			private function soundFileSelected(event: Event): void 
 			{
 				soundFile.text = File(event.target).url;
-	            var request:URLRequest = new URLRequest(soundFile.text);
-	            var soundFactory:Sound = new Sound();
-	            soundFactory.addEventListener(Event.COMPLETE, soundcompleteHandler);
-	            soundFactory.addEventListener(Event.ID3, id3Handler);
-	            soundFactory.addEventListener(IOErrorEvent.IO_ERROR, soundioErrorHandler);
-	            soundFactory.addEventListener(ProgressEvent.PROGRESS, progressHandler);
-	            soundFactory.load(request);
-	            purr.notificationSound = soundFactory;
+				openSound();
+			}
+
+			private function openSound(): void
+			{
+				if (StringUtil.trim(soundFile.text) != '')
+				{
+		            var request:URLRequest = new URLRequest(soundFile.text);
+		            var soundFactory:Sound = new Sound();
+		            soundFactory.addEventListener(Event.COMPLETE, soundcompleteHandler);
+		            soundFactory.addEventListener(Event.ID3, id3Handler);
+		            soundFactory.addEventListener(IOErrorEvent.IO_ERROR, soundioErrorHandler);
+		            soundFactory.addEventListener(ProgressEvent.PROGRESS, progressHandler);
+		            soundFactory.load(request);
+		            purr.notificationSound = soundFactory;
+		         }
+		         else
+		         {
+		            purr.notificationSound = null;
+		         }
 			}
 
 	        private function soundcompleteHandler(event:Event):void 
@@ -230,7 +242,7 @@
 				<mx:GridItem>
 					<mx:HBox width="100%">
 						<mx:Label text="Sound File"/>
-						<mx:TextInput id="soundFile" width="200"/>
+						<mx:TextInput id="soundFile" width="200" keyUp="openSound()"/>
 						<mx:Button label="..." width="20"
 							paddingBottom="0" paddingLeft="0" paddingRight="0" paddingTop="0" click="soundFileOpen()"/>
 					</mx:HBox>
