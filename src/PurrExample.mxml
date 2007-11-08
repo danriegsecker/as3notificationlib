@@ -15,6 +15,7 @@
 			private var timer:Timer;
 			private var purr:Purr = new Purr(1);
 			private var fileToOpen:File;
+			private var sndFileToOpen:File;
 
 			private function onCreationComplete(): void
 			{
@@ -126,6 +127,53 @@
 			{
 				videoFile.text = File(event.target).url;
 			}
+
+			private function soundFileOpen(): void
+			{
+				sndFileToOpen = new File();
+				try
+				{
+				    sndFileToOpen.browseForOpen("Open", [new FileFilter("Sounds", "*.mp3")]);
+				    sndFileToOpen.addEventListener(Event.SELECT, soundFileSelected);
+				}
+				catch (error:Error)
+				{
+				    trace("Failed:", error.message);
+				}
+			}
+
+			private function soundFileSelected(event: Event): void 
+			{
+				soundFile.text = File(event.target).url;
+	            var request:URLRequest = new URLRequest(soundFile.text);
+	            var soundFactory:Sound = new Sound();
+	            soundFactory.addEventListener(Event.COMPLETE, soundcompleteHandler);
+	            soundFactory.addEventListener(Event.ID3, id3Handler);
+	            soundFactory.addEventListener(IOErrorEvent.IO_ERROR, soundioErrorHandler);
+	            soundFactory.addEventListener(ProgressEvent.PROGRESS, progressHandler);
+	            soundFactory.load(request);
+	            purr.notificationSound = soundFactory;
+			}
+
+	        private function soundcompleteHandler(event:Event):void 
+	        {
+	            trace("completeHandler: " + event);
+	        }
+	
+	        private function id3Handler(event:Event):void 
+	        {
+	            trace("id3Handler: " + event);
+	        }
+	
+	        private function soundioErrorHandler(event:Event):void 
+	        {
+	            trace("ioErrorHandler: " + event);
+	        }
+	
+	        private function progressHandler(event:ProgressEvent):void 
+	        {
+	            trace("progressHandler: " + event);
+	        }
 		]]>
 	</mx:Script>
 	<mx:Button click="addNotification(AbstractNotification.TOP_LEFT)" label="Top Left" top="2" left="2"/>
@@ -176,6 +224,17 @@
 			<mx:GridRow>
 				<mx:GridItem>
 					<mx:RadioButton groupName="getEvents" id="noEvents" label="Don't capture click event"/>
+				</mx:GridItem>
+			</mx:GridRow>
+			<mx:GridRow>
+				<mx:GridItem>
+					<mx:HBox width="100%">
+						<mx:Label text="Sound File"/>
+						<mx:TextInput id="soundFile" width="200"/>
+						<mx:Button label="..." width="20"
+							paddingBottom="0" paddingLeft="0" paddingRight="0" paddingTop="0" click="soundFileOpen()"/>
+					</mx:HBox>
+					
 				</mx:GridItem>
 			</mx:GridRow>
 		</mx:Grid>

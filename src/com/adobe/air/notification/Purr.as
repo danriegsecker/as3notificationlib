@@ -7,6 +7,7 @@ package com.adobe.air.notification
 	import flash.display.NativeWindow;
 	import flash.display.SystemTrayIcon;
 	import flash.events.Event;
+	import flash.media.Sound;
 	import flash.system.Shell;
 
 	public class Purr
@@ -158,6 +159,19 @@ package com.adobe.air.notification
 			this.bottomLeftQ.resume();
 			this.bottomRightQ.resume();
 			this.paused = false;
+		}
+
+		public function set notificationSound(value: Sound): void
+		{
+			this.topLeftQ.sound = value;
+			this.topRightQ.sound = value;
+			this.bottomLeftQ.sound = value;
+			this.bottomRightQ.sound = value;
+		}
+
+		public function get notificationSound(): Sound
+		{
+			return this.topLeftQ.sound;
 		}
 
 		public function isPaused():Boolean
