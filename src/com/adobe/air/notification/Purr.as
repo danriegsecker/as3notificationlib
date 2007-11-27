@@ -1,11 +1,11 @@
 package com.adobe.air.notification
 {
 	import flash.display.Bitmap;
-	import flash.display.DockIcon;
-	import flash.display.InteractiveIcon;
+	import flash.desktop.DockIcon;
+	import flash.desktop.InteractiveIcon;
 	import flash.display.NativeMenu;
 	import flash.display.NativeWindow;
-	import flash.display.SystemTrayIcon;
+	import flash.desktop.SystemTrayIcon;
 	import flash.events.Event;
 	import flash.media.Sound;
 	import flash.system.Shell;
