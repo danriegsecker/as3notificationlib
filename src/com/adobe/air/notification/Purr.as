@@ -8,7 +8,7 @@ package com.adobe.air.notification
 	import flash.desktop.SystemTrayIcon;
 	import flash.events.Event;
 	import flash.media.Sound;
-	import flash.system.Shell;
+	import flash.desktop.NativeApplication;
 
 	public class Purr
 	{
@@ -27,18 +27,18 @@ package com.adobe.air.notification
 
 			this.paused = false;
 
-			Shell.shell.idleThreshold = idleThreshold * 60;
-			Shell.shell.addEventListener(Event.USER_IDLE, function(e: Event): void { pause(); });
-			Shell.shell.addEventListener(Event.USER_PRESENT, function(e: Event): void { resume(); });
+			NativeApplication.nativeApplication.idleThreshold = idleThreshold * 60;
+			NativeApplication.nativeApplication.addEventListener(Event.USER_IDLE, function(e: Event): void { pause(); });
+			NativeApplication.nativeApplication.addEventListener(Event.USER_PRESENT, function(e: Event): void { resume(); });
 		}
 
 		public function alert(alertType:String, nativeWindow:NativeWindow):void
 		{
-			if (Shell.supportsDockIcon)
+			if (NativeApplication.supportsDockIcon)
 			{
-				DockIcon(Shell.shell.icon).bounce(alertType);
+				DockIcon(NativeApplication.nativeApplication.icon).bounce(alertType);
 			}
-			else if (Shell.supportsSystemTrayIcon)
+			else if (NativeApplication.supportsSystemTrayIcon)
 			{
 				if (nativeWindow != null)
 				{
@@ -75,55 +75,55 @@ package com.adobe.air.notification
 
 		public function setMenu(menu:NativeMenu): void
 		{
-			if (Shell.supportsDockIcon)
+			if (NativeApplication.supportsDockIcon)
 			{
-				DockIcon(Shell.shell.icon).menu = menu;
+				DockIcon(NativeApplication.nativeApplication.icon).menu = menu;
 			}
-			else if (Shell.supportsSystemTrayIcon)
+			else if (NativeApplication.supportsSystemTrayIcon)
 			{
-				SystemTrayIcon(Shell.shell.icon).menu = menu;
+				SystemTrayIcon(NativeApplication.nativeApplication.icon).menu = menu;
 			}
 		}
 
 		public function getMenu():NativeMenu
 		{
-			if (Shell.supportsDockIcon)
+			if (NativeApplication.supportsDockIcon)
 			{
-				return DockIcon(Shell.shell.icon).menu;
+				return DockIcon(NativeApplication.nativeApplication.icon).menu;
 			}
-			else if (Shell.supportsSystemTrayIcon)
+			else if (NativeApplication.supportsSystemTrayIcon)
 			{
-				return SystemTrayIcon(Shell.shell.icon).menu;
+				return SystemTrayIcon(NativeApplication.nativeApplication.icon).menu;
 			}
 			return null;
 		}
 
 		public function setIcons(icons:Array, tooltip:String = null):void
 		{
-			if (Shell.shell.icon is InteractiveIcon)
+			if (NativeApplication.nativeApplication.icon is InteractiveIcon)
 			{
-				InteractiveIcon(Shell.shell.icon).bitmaps = icons;
+				InteractiveIcon(NativeApplication.nativeApplication.icon).bitmaps = icons;
 			}
-			if (Shell.supportsSystemTrayIcon)
+			if (NativeApplication.supportsSystemTrayIcon)
 			{
-				SystemTrayIcon(Shell.shell.icon).tooltip = tooltip;
+				SystemTrayIcon(NativeApplication.nativeApplication.icon).tooltip = tooltip;
 			}
 		}
 
 		public function getIcons():Array
 		{
-			if (Shell.shell.icon is InteractiveIcon)
+			if (NativeApplication.nativeApplication.icon is InteractiveIcon)
 			{
-				return InteractiveIcon(Shell.shell.icon).bitmaps;
+				return InteractiveIcon(NativeApplication.nativeApplication.icon).bitmaps;
 			}
 			return null;
 		}
 
 		public function getToolTip():String
 		{
-			if (Shell.supportsSystemTrayIcon)
+			if (NativeApplication.supportsSystemTrayIcon)
 			{
-				return SystemTrayIcon(Shell.shell.icon).tooltip;
+				return SystemTrayIcon(NativeApplication.nativeApplication.icon).tooltip;
 			}
 			return null;
 		}

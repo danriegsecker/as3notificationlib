@@ -10,7 +10,7 @@ package com.adobe.air.notification
 	import flash.events.MouseEvent;
 	import flash.events.TimerEvent;
 	import flash.geom.Rectangle;
-	import flash.system.Shell;
+	import flash.desktop.NativeApplication;
 	import flash.utils.Timer;
 
 	[Event(name=NotificationClickedEvent.NOTIFICATION_CLICKED_EVENT, type="com.adobe.air.notification.NotificationClickedEvent")]
@@ -41,11 +41,11 @@ package com.adobe.air.notification
 
         	if (position == null)
         	{
-	            if (Shell.supportsDockIcon)
+	            if (NativeApplication.supportsDockIcon)
 	            {
 	            	position = AbstractNotification.TOP_RIGHT;
 	            }
-	            else if (Shell.supportsSystemTrayIcon)
+	            else if (NativeApplication.supportsSystemTrayIcon)
 	            {
 	            	position = AbstractNotification.BOTTOM_RIGHT;
 	            }
@@ -57,7 +57,6 @@ package com.adobe.air.notification
 		protected function getWinOptions(): NativeWindowInitOptions
 		{
             var result: NativeWindowInitOptions = new NativeWindowInitOptions();
-            result.appearsInWindowMenu = false;
             result.hasMenu = false;
             result.maximizable = false;
             result.minimizable = false;
