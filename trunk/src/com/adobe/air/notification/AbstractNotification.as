@@ -57,7 +57,6 @@ package com.adobe.air.notification
 		protected function getWinOptions(): NativeWindowInitOptions
 		{
             var result: NativeWindowInitOptions = new NativeWindowInitOptions();
-            result.hasMenu = false;
             result.maximizable = false;
             result.minimizable = false;
             result.resizable = false;
