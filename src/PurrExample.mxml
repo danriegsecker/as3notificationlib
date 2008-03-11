@@ -30,7 +30,7 @@
 				timer.addEventListener(TimerEvent.TIMER,
 					function(e:TimerEvent):void
 					{
-						purr.alert(alertType.selectedLabel, Shell.shell.activeWindow);
+						purr.alert(alertType.selectedLabel, NativeApplication.nativeApplication.activeWindow);
 					});
 			}
 
