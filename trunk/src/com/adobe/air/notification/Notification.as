@@ -46,7 +46,7 @@ package com.adobe.air.notification
     public class Notification
         extends AbstractNotification
     {        
-        private var _message:String;
+        private var _message:String;        
         private var _title:String;
        	private var _bitmap: Bitmap;
 
@@ -173,8 +173,18 @@ package com.adobe.air.notification
         public function set message(message:String):void
         {
         	this._message = message;
-            this.messageLabel.text = message;
-        }
+           	this.messageLabel.text = message;
+        }                                
+
+		public function set htmlText(htmlText:String):void
+		{
+			this.messageLabel.htmlText = htmlText;			
+		}		
+
+		public function get htmlText():String
+		{
+			return this.messageLabel.htmlText; 
+		}
 
         public function get message():String
         {
