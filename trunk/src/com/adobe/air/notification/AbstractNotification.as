@@ -178,7 +178,7 @@ package com.adobe.air.notification
 						var nAlpha:Number = getSprite().alpha;
 						nAlpha = nAlpha + .01;
 						getSprite().alpha = nAlpha;
-						if (getSprite().alpha < .9)
+						if (getSprite().alpha < .8)
 						{
 							alphaTimer.start();
 						}
@@ -231,7 +231,7 @@ package com.adobe.air.notification
 		{
 			this.getSprite().graphics.clear();
             this.getSprite().graphics.beginFill(0x333333);
-            this.getSprite().graphics.drawRoundRect(0, 0, this.width, this.height, 10, 10);
+            this.getSprite().graphics.drawRoundRect(0, 0, this.width, this.height, 30, 30);
             this.getSprite().graphics.endFill();
 		}
 
