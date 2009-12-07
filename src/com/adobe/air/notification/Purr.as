@@ -34,15 +34,15 @@
 */
 package com.adobe.air.notification
 {
-	import flash.display.Bitmap;
 	import flash.desktop.DockIcon;
 	import flash.desktop.InteractiveIcon;
+	import flash.desktop.NativeApplication;
+	import flash.desktop.SystemTrayIcon;
+	import flash.display.Bitmap;
 	import flash.display.NativeMenu;
 	import flash.display.NativeWindow;
-	import flash.desktop.SystemTrayIcon;
 	import flash.events.Event;
 	import flash.media.Sound;
-	import flash.desktop.NativeApplication;
 
 	public class Purr
 	{
@@ -52,7 +52,7 @@ package com.adobe.air.notification
 		private var bottomRightQ:NotificationQueue;
 		private var paused:Boolean;
 
-		public function Purr(idleThreshold:uint)
+		public function Purr(idleThreshold:int = -1)
 		{
 			this.topLeftQ = new NotificationQueue();
 			this.topRightQ = new NotificationQueue();
@@ -60,7 +60,9 @@ package com.adobe.air.notification
 			this.bottomRightQ = new NotificationQueue();
 
 			this.paused = false;
-
+			
+			if (idleThreshold == -1) idleThreshold = 10;
+			
 			NativeApplication.nativeApplication.idleThreshold = idleThreshold * 60;
 			NativeApplication.nativeApplication.addEventListener(Event.USER_IDLE, function(e: Event): void { pause(); });
 			NativeApplication.nativeApplication.addEventListener(Event.USER_PRESENT, function(e: Event): void { resume(); });
@@ -81,6 +83,11 @@ package com.adobe.air.notification
 			}
 		}
 
+		public function setIdleThreshold(idle:int):void
+		{
+			NativeApplication.nativeApplication.idleThreshold = idle * 60;
+		}
+		
 		public function addNotification(n:AbstractNotification):void
 		{
 			switch (n.position)
