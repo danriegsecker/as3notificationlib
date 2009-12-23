@@ -56,6 +56,11 @@ package com.adobe.air.notification
             this.paused = false;
         }
 		
+		public function get length():uint
+		{
+			return this.queue.length;
+		}
+		
 		public function addNotification(notification:AbstractNotification):void
 		{
             this.queue.push(notification);
@@ -74,7 +79,9 @@ package com.adobe.air.notification
 				n = null;
 			}
 			if (this.playing)
+			{
 				this.playing = false;
+			}
 		}
 
 		public function pause():void
@@ -91,24 +98,24 @@ package com.adobe.air.notification
         private function run(): void
         {
         	if (this.paused || this.queue.length == 0) return;
-            var n:AbstractNotification = this.queue[0] as AbstractNotification;
-            n.addEventListener(Event.CLOSE,
-            	function(e: Event): void
-            	{
-            		if (sound != null)
-            		{
-						channel.stop();         		
-            		}
-            		queue.shift();
-            		if (queue.length > 0)
-            		{
-            			run();
-            		}
-            		else
-            		{
-            			playing = false;
-            		}
-            	});
+            var n:AbstractNotification = this.queue.shift() as AbstractNotification;
+			var listener:Function = function(e: Event): void
+			{
+				n.removeEventListener(Event.CLOSE, listener);
+				if (sound != null)
+				{
+					channel.stop();         		
+				}
+				if (queue.length > 0)
+				{
+					run();
+				}
+				else
+				{
+					playing = false;
+				}
+			}; 
+            n.addEventListener(Event.CLOSE, listener);
             var screen:Screen = Screen.mainScreen;
 			switch (n.position)
             {
