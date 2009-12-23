@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:WindowedApplication xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="onCreationComplete()" layout="absolute">
-	<mx:Script>
+<mx:WindowedApplication creationComplete="onCreationComplete()" layout="absolute"
+						xmlns:fx="http://ns.adobe.com/mxml/2009" 
+						xmlns:s="library://ns.adobe.com/flex/spark" 
+						xmlns:mx="library://ns.adobe.com/flex/halo">
+	<fx:Script>
 		<![CDATA[
 			import com.adobe.air.notification.VideoNotification;
 			import com.adobe.air.notification.NotificationClickedEvent;
@@ -187,7 +190,7 @@
 	            trace("progressHandler: " + event);
 	        }
 		]]>
-	</mx:Script>
+	</fx:Script>
 	<mx:Button click="addNotification(AbstractNotification.TOP_LEFT)" label="Top Left" top="2" left="2"/>
 	<mx:Button click="addNotification(AbstractNotification.TOP_RIGHT)" label="Top Right" top="2" right="2"/>
 	<mx:Button click="addNotification(AbstractNotification.BOTTOM_RIGHT)" label="Bottom Right" right="2" bottom="2"/>
@@ -197,10 +200,10 @@
 			<mx:HBox>
 				<mx:ComboBox id="alertType">
 					<mx:dataProvider>
-						<mx:Array>
-							<mx:String>{NotificationType.INFORMATIONAL}</mx:String>
-							<mx:String>{NotificationType.CRITICAL}</mx:String>
-						</mx:Array>
+						<fx:Array>
+							<fx:String>{NotificationType.INFORMATIONAL}</fx:String>
+							<fx:String>{NotificationType.CRITICAL}</fx:String>
+						</fx:Array>
 					</mx:dataProvider>
 				</mx:ComboBox>
 				<mx:Button label="Alert in 3 seconds" click="alert();"/>
@@ -208,6 +211,7 @@
 		</mx:VBox>
 		<mx:Button id="pauseButton" label="Pause" click="pause();"/>
 		<mx:Button id="resumeButton" label="Resume" click="resume()" enabled="false"/>
+		<mx:Button id="gcButton" label="System.gc()" click="System.gc();"/>
 		<mx:Grid>
 			<mx:GridRow>
 				<mx:GridItem>
@@ -246,10 +250,8 @@
 						<mx:Button label="..." width="20"
 							paddingBottom="0" paddingLeft="0" paddingRight="0" paddingTop="0" click="soundFileOpen()"/>
 					</mx:HBox>
-					
 				</mx:GridItem>
 			</mx:GridRow>
 		</mx:Grid>
-		
 	</mx:Box>
 </mx:WindowedApplication>

@@ -34,6 +34,7 @@
 */
 package com.adobe.air.notification
 {
+	import flash.desktop.NativeApplication;
 	import flash.display.NativeWindow;
 	import flash.display.NativeWindowInitOptions;
 	import flash.display.NativeWindowSystemChrome;
@@ -41,10 +42,10 @@ package com.adobe.air.notification
 	import flash.display.Sprite;
 	import flash.display.StageAlign;
 	import flash.display.StageScaleMode;
+	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.events.TimerEvent;
 	import flash.geom.Rectangle;
-	import flash.desktop.NativeApplication;
 	import flash.utils.Timer;
 
 	[Event(name=NotificationClickedEvent.NOTIFICATION_CLICKED_EVENT, type="com.adobe.air.notification.NotificationClickedEvent")]
@@ -146,22 +147,23 @@ package com.adobe.air.notification
 			}
 
 			this.alphaTimer = new Timer(25);
-			this.alphaTimer.addEventListener(TimerEvent.TIMER,
-				function (e:TimerEvent):void
+			var listener:Function = function (e:TimerEvent):void
+			{
+				alphaTimer.stop();
+				var nAlpha:Number = getSprite().alpha;
+				nAlpha = nAlpha - .01;
+				getSprite().alpha = nAlpha;
+				if (getSprite().alpha <= 0)
 				{
-					alphaTimer.stop();
-					var nAlpha:Number = getSprite().alpha;
-					nAlpha = nAlpha - .01;
-					getSprite().alpha = nAlpha;
-					if (getSprite().alpha <= 0)
-					{
-						superClose();
-					}
-					else 
-					{
-						alphaTimer.start();
-					}
-				});
+					alphaTimer.removeEventListener(TimerEvent.TIMER, listener);
+					superClose();
+				}
+				else 
+				{
+					alphaTimer.start();
+				}
+			};
+			this.alphaTimer.addEventListener(TimerEvent.TIMER, listener);
 			this.alphaTimer.start();
 		}
 
@@ -171,32 +173,39 @@ package com.adobe.air.notification
 			if (value == true)
 			{
 				this.alphaTimer = new Timer(10);
-				this.alphaTimer.addEventListener(TimerEvent.TIMER,
-					function (e:TimerEvent):void
+				var listener:Function = function (e:TimerEvent):void
+				{
+					alphaTimer.stop();
+					var nAlpha:Number = getSprite().alpha;
+					nAlpha = nAlpha + .01;
+					getSprite().alpha = nAlpha;
+					if (getSprite().alpha < .9)
 					{
-						alphaTimer.stop();
-						var nAlpha:Number = getSprite().alpha;
-						nAlpha = nAlpha + .01;
-						getSprite().alpha = nAlpha;
-						if (getSprite().alpha < .8)
-						{
-							alphaTimer.start();
-						}
-						else
-						{
-							closeTimer = new Timer(duration * 1000);
-				            closeTimer.addEventListener(TimerEvent.TIMER,
-				            	function(e:TimerEvent):void
-				            	{
-						            close();
-				            	}); 
-				            closeTimer.start();
-						}
-					});
+						alphaTimer.start();
+					}
+					else
+					{
+						alphaTimer.removeEventListener(TimerEvent.TIMER, listener);
+						startClose();
+					}
+				};
+				this.alphaTimer.addEventListener(TimerEvent.TIMER, listener);
 				this.alphaTimer.start();
 			}
 		}
 
+		private function startClose():void
+		{
+			this.closeTimer = new Timer(duration * 1000);
+			var listener:Function = function(e:TimerEvent):void
+			{
+				closeTimer.removeEventListener(TimerEvent.TIMER, listener);
+				close();
+			};
+			this.closeTimer.addEventListener(TimerEvent.TIMER, listener); 
+			this.closeTimer.start();
+		}
+		
         public function set position(position:String):void
         {
         	this._position = position;
@@ -249,6 +258,8 @@ package com.adobe.air.notification
 
 		private function notificationClick(event:MouseEvent):void
 		{
+			var sprite:Sprite = event.currentTarget as Sprite;
+			sprite.removeEventListener(MouseEvent.CLICK, this.notificationClick);
 			this.dispatchEvent(new NotificationClickedEvent());
 			this.close();
 		}

@@ -219,5 +219,10 @@ package com.adobe.air.notification
 		{
 			return this.paused;
 		}
+		
+		public function get length():uint
+		{
+			return (this.topLeftQ.length + this.topRightQ.length + this.bottomLeftQ.length + this.bottomRightQ.length);
+		}
 	}
 }
