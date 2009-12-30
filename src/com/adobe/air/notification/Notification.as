@@ -102,7 +102,7 @@ package com.adobe.air.notification
 
 			// message            
             this.messageLabel = new TextField();
-           this.messageLabel.autoSize = TextFieldAutoSize.NONE;
+			this.messageLabel.autoSize = TextFieldAutoSize.NONE;
             var messageFormat:TextFormat = this.messageLabel.defaultTextFormat;
             messageFormat.font = "Verdana";
             messageFormat.color = 0xFFFFFF;
